@@ -2,6 +2,7 @@
 #include <string>
 #include <iomanip>
 #include <ctime>
+#pragma warning(disable : 4996)
 using namespace std;
 
 struct Task {
@@ -177,7 +178,7 @@ int main()
         switch (tmp)
         {
         case 1:
-            {
+        {
             system("cls");
             cout << " === Create tsak === " << endl << endl;
             string new_name;
@@ -196,15 +197,53 @@ int main()
             cout << "Enter deadline: ";
             getline(cin, new_date);
 
-            create_task(task_data, new_name, new_data, new_priority, new_date);
+            if (create_task(task_data, new_name, new_data, new_priority, new_date) == false) { cout << "Oops incorrect data!"; }
             break;
-            }
+        }
         case 2:
-            delete_task(name, name_s, data, data_s, priority, priority_s, end_date, ROWS_D, COLS_D);
+        {
+            system("cls");
+            cout << " === Delete task === " << endl << endl;
+            int tmp;
+            cout << "Enter index task: ";
+            cin >> tmp;
+
+            if (delete_task(task_data, tmp) == false) { cout << "Oops incorrect data!"; }
             break;
+        }
         case 3:
-            cout_task(name, name_s, data, data_s, priority, priority_s, end_date, ROWS_D, COLS_D);
+            {
+            system("cls");
+            cout << " === Edit task === " << endl << endl;
+            int tmp;
+            cout << "Enter index task: ";
+            cin >> tmp;
+
+            string edit_name;
+            cout << "Enter name: ";
+            getline(cin, edit_name);
+
+            string edit_data;
+            cout << "Enter description: ";
+            getline(cin, edit_data);
+
+            int edit_priority;
+            cout << "Enter priority: ";
+            cin >> edit_priority;
+
+            string edit_new_date;
+            cout << "Enter deadline: ";
+            getline(cin, edit_new_date);
+
+            if (edit_task(task_data, tmp, edit_name, edit_data, edit_priority, edit_new_date) == false) { cout << "Oops incorrect data!"; }
+            }
             break;
+        case 4:
+            {
+            system("cls");
+            cout << " === Cout task === " << endl << endl;
+            cout_task(task_data);
+            }
         default:
             //return 0;
             break;
@@ -213,10 +252,15 @@ int main()
 
 
     //delete
-    delete[] name;
-    delete[] data;
-    delete[] priority;
-    for (int i = 0; i < ROWS_D; i++) { delete[] end_date[i]; }
-    delete[] end_date;
+    delete[] task_data.name;
+    delete[] task_data.data;
+    delete[] task_data.priority;
+    for (int i = 0; i < task_data.ROWS_D; i++) { 
+        delete[] task_data.end_date[i]; 
+        delete[] task_data.create_date[i];
+    }
+    delete[] task_data.end_date;
+    delete[] task_data.create_date;
+
 }
 
