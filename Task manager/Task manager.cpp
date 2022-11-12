@@ -1,6 +1,19 @@
 ﻿#include <iostream>
 #include <string>
+#include <iomanip>
+#include <ctime>
 using namespace std;
+
+struct Task {
+    int name_s = 0, data_s = 0, priority_s = 0, ROWS_D = 3, COLS_D = 0;
+    string* name = new string[name_s];
+    string* data = new string[data_s];
+    int* priority = new int[priority_s];
+    int** create_date = new int* [ROWS_D];
+    int** end_date = new int* [ROWS_D];
+};
+
+
 
 template <typename Type>
 Type* push_back(Type* arr, int& size, Type value) {
@@ -54,11 +67,10 @@ int** del_2D(int** arr, int ROWS, int& COLS, int ind) {
     return tmp_arr;
 }
 
-bool create_task(string*& name, int& name_s, string*& data, int& data_s, int*& priority, int& priority_s, int**& end_date, int ROWS_D, int& COLS_D, string new_name, string new_data, int new_priority, string new_date) {
-    if (new_priority < 1 || new_priority > 5) { return false; }
-    //validate date 
-    const int size = new_date.length();
-    int sablon[size + 1], d, m, y;
+bool validate_date(string date, int& d, int& m, int& y) {
+    int size = date.length() + 1;
+    int* sablon = new int[size]; // !
+
     int ascii[10]{ 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
     int days_max[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
@@ -66,7 +78,7 @@ bool create_task(string*& name, int& name_s, string*& data, int& data_s, int*& p
 
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < 10; j++) {
-            if (new_date[i] == ascii[j]) { sablon[i] = j; }
+            if (date[i] == ascii[j]) { sablon[i] = j; }
         }
     }
 
@@ -89,86 +101,75 @@ bool create_task(string*& name, int& name_s, string*& data, int& data_s, int*& p
     else { return false; }
     if (y % 4 == 0) { days_max[1] = 29; }
     if (d > 31 || m > 12 || d < 1 || m < 1 || d > days_max[m - 1] || y < 1) { return false; }
+    return true;
+}
 
-    name = push_back(name, name_s, new_name);
+bool create_task(Task& task_data, string new_name, string new_data, int new_priority, string new_date) {
+    if (new_priority < 1 || new_priority > 5) { return false; } // Priority
+    int d, m, y;
+    if (validate_date(new_date, d, m, y) == false) {return false;} // Valitade date
 
-    data = push_back(data, data_s, new_data);
-
-    priority = push_back(priority, priority_s, new_priority);
-
-    end_date = push_back_2D(end_date, ROWS_D, COLS_D, d, m, y);
+    task_data.name = push_back(task_data.name, task_data.name_s, new_name); // Add name
+    task_data.data = push_back(task_data.data, task_data.data_s, new_data); // Add description
+    task_data.priority = push_back(task_data.priority, task_data.priority_s, new_priority); // Add priority
+    task_data.end_date = push_back_2D(task_data.end_date, task_data.ROWS_D, task_data.COLS_D, d, m, y); // Add deadline
+    time_t t = time(NULL);
+    tm tm = *localtime(&t);
+    task_data.create_date = push_back_2D(task_data.create_date, task_data.ROWS_D, task_data.COLS_D, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900); // Add create task day
 
     return true;
 }
 
-bool cout_task(string*& name, int& name_s, string*& data, int& data_s, int*& priority, int& priority_s, int**& end_date, int ROWS_D, int& COLS_D) {
-    for (int i = 0; i < name_s; i++) {
-        cout << "Task index " << i << " : " << endl;
-        cout << name[i] << endl << data[i] << endl << priority[i] << endl << end_date[0][i] << " " << end_date[1][i] << " " << end_date[2][i] << endl;
+bool cout_task(Task task_data) {
+    for (int i = 0; i < task_data.name_s; i++) {
+        cout << " === Task index " << i << " === " << endl;
+        cout << "Task name: " << task_data.name[i] << endl << "Task description: " << task_data.data[i] << endl << "Task priority: " << task_data.priority[i] << endl << "Deadline: " << task_data.end_date[0][i] << "/" << task_data.end_date[1][i] << "/" << task_data.end_date[2][i] << endl << "Create task date: " << task_data.create_date[0][i] << "/" << task_data.create_date[1][i] << "/" << task_data.create_date[2][i] << endl;
     }
     return true;
 }
 
-bool delete_task(string*& name, int& name_s, string*& data, int& data_s, int*& priority, int& priority_s, int**& end_date, int ROWS_D, int& COLS_D) {
-    int tmp;
-    cout << "Enter index: ";
-    cin >> tmp;
+bool delete_task(Task& task_data, int index) {
+    if (index < 0 || index > task_data.name_s) { return false; }
+    task_data.name = del(task_data.name, task_data.name_s, index);
+    task_data.data = del(task_data.data, task_data.data_s, index);
+    task_data.priority = del(task_data.priority, task_data.priority_s, index);
+    task_data.end_date = del_2D(task_data.end_date, task_data.ROWS_D, task_data.COLS_D, index);
+    task_data.create_date = del_2D(task_data.create_date, task_data.ROWS_D, task_data.COLS_D, index);
 
-    name = removee(name, name_s, tmp);
-    data = removee(data, data_s, tmp);
-    priority = removee(priority, priority_s, tmp);
-    removee_2D(end_date, ROWS_D, COLS_D, tmp);
     return true;
 }
 
-bool edit_task(string*& name, int& name_s, string*& data, int& data_s, int*& priority, int& priority_s, int**& end_date, int ROWS_D, int& COLS_D) {
-    int tmp, tmp2;
-    cout << "Enter index: ";
-    cin >> tmp;
-    cout << "1. Task Name" << endl << "2. Task data " << endl << "3. TAsk priority " << endl << "4. Task Date" << endl << "Enter edit data: ";
-    cin >> tmp2;
-    switch (tmp2)
-    {
-    case 1:
-        cout << "Enter task name: ";
-        cin >> tmp2;
-        name[tmp] = tmp2;
-        break;
-    case 2:
-        cout << "Enter task data: ";
-        cin >> tmp2;
-        data[tmp] = tmp2;
-        break;
-    case 3:
-        cout << "Enter task data: ";
-        cin >> tmp2;
-        data[tmp] = tmp2;
-        break;
-    case 4:
-        cout << "Enter task data: ";
-        cin >> tmp2;
-        data[tmp] = tmp2;
-        break;
-    default:
-        break;
+bool edit_task(Task& task_data, int index, string edit_name, string edit_data, int edit_priority, string edit_new_date) {
+    if (index < 0 || index > task_data.name_s) { return false; }
+    if (edit_name != " ") { task_data.name[index] = edit_name; }
+    if (edit_data != " ") { task_data.data[index] = edit_data; }
+    if (edit_priority != -1) { 
+        if (edit_priority < 1 || edit_priority > 5) { return false; }
+        task_data.priority[index] = edit_priority;
     }
+    if (edit_new_date != " ") { 
+        int d, m, y;
+        if (validate_date(edit_new_date, d, m, y) == false) { return false; } // Valitade date
+        task_data.end_date[0][index] = d;
+        task_data.end_date[1][index] = m;
+        task_data.end_date[2][index] = y;
+    }
+
     return true;
 }
 
 int main()
 {
-    //create masiv
-    int name_s = 0, data_s = 0, priority_s = 0, ROWS_D = 3, COLS_D = 0;
-    string* name = new string[name_s];
-    string* data = new string[data_s];
-    int* priority = new int[priority_s];
-    int** end_date = new int* [ROWS_D];
-    for (int i = 0; i < ROWS_D; i++) {
-        end_date[i] = new int[COLS_D];
+    Task task_data;
+    
+    for (int i = 0; i < task_data.ROWS_D; i++) {
+        task_data.end_date[i] = new int[task_data.COLS_D];
+        task_data.create_date[i] = new int[task_data.COLS_D];
     }
+
     while (1) {
-        cout << " === TEST TASK MANAGER === " << endl;
-        cout << "1. New task" << endl << "2. Delete task" << endl << "3. TEST Cout task" << endl;
+        cout << " === TEST MENU === " << endl;
+        cout << "1. New task" << endl << "2. Delete task" << endl << "3. Edit task" << endl << "4. Cout task test" << endl;
         int tmp;
         cout << "Enter num: ";
         cin >> tmp;
@@ -176,8 +177,28 @@ int main()
         switch (tmp)
         {
         case 1:
-            create_task(name, name_s, data, data_s, priority, priority_s, end_date, ROWS_D, COLS_D);
+            {
+            system("cls");
+            cout << " === Create tsak === " << endl << endl;
+            string new_name;
+            cout << "Enter name: ";
+            getline(cin, new_name);
+
+            string new_data;
+            cout << "Enter description: ";
+            getline(cin, new_data);
+
+            int new_priority;
+            cout << "Enter priority: ";
+            cin >> new_priority;
+
+            string new_date;
+            cout << "Enter deadline: ";
+            getline(cin, new_date);
+
+            create_task(task_data, new_name, new_data, new_priority, new_date);
             break;
+            }
         case 2:
             delete_task(name, name_s, data, data_s, priority, priority_s, end_date, ROWS_D, COLS_D);
             break;
