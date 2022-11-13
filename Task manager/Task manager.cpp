@@ -228,7 +228,7 @@ bool find_task(Task& task_data, string search) {
 bool sort_task(Task task_data, int sort = 0) {
     string* name1 = new string[task_data.name_s];
     for (int i = 0; i < task_data.name_s; i++) { name1[i] = task_data.name[i]; }
-
+    /*
     string* data1 = new string[task_data.data_s];
     for (int i = 0; i < task_data.data_s; i++) { name1[i] = task_data.data[i]; }
 
@@ -260,10 +260,11 @@ bool sort_task(Task task_data, int sort = 0) {
                 }
             }
         }
-    }
+    }*/
     for (int i = 0; i < task_data.name_s; i++) {
         cout << " === Task index " << i << " === " << endl;
-        cout << "Task name: " << name1[i] << endl << "Task description: " << data1[i] << endl << "Task priority: " << priority1[i] << endl << "Deadline: " << end_date1[0][i] << "/" << end_date1[1][i] << "/" << end_date1[2][i] << endl << "Create task date: " << create_date1[0][i] << "/" << create_date1[1][i] << "/" << create_date1[2][i] << endl;
+        cout << "Task name: " << name1[i];
+        //<< endl << "Task description: " << data1[i] << endl << "Task priority: " << priority1[i] << endl << "Deadline: " << end_date1[0][i] << "/" << end_date1[1][i] << "/" << end_date1[2][i] << endl << "Create task date: " << create_date1[0][i] << "/" << create_date1[1][i] << "/" << create_date1[2][i] << endl;
     }
     return true;
 }
