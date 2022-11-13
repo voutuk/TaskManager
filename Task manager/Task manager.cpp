@@ -12,6 +12,7 @@ struct Task {
     int* priority = new int[priority_s];
     int** create_date = new int* [ROWS_D];
     int** end_date = new int* [ROWS_D];
+
 };
 
 template <typename Type>
@@ -142,10 +143,12 @@ bool cout_task_upd(Task task_data, int visible) {
     }
     else if (visible == 2) {
         if (d + 7 > days_max[m - 1]) { 
-            d1 = d + 7 - days_max[m - 1];
-            m1 = m + 1;
+            d1 = d + 7 - days_max[m - 1], y1 = y;
+            if (m == 11) { m1 = 0, y1 = y + 1; }
+            else { m1 = m + 1; }
+
             for (int i = 0; i < task_data.name_s; i++) {
-                if (task_data.end_date[0][i] > d && task_data.end_date[0][i] < d1 && task_data.end_date[1][i] == m1 && task_data.end_date[2][i] == y) {
+                if (task_data.end_date[0][i] > d && task_data.end_date[0][i] < d1 && task_data.end_date[1][i] == m1 && task_data.end_date[2][i] == y1) {
                     cout << " === Task index " << i << " === " << endl;
                     cout << "Task name: " << task_data.name[i] << endl << "Task description: " << task_data.data[i] << endl << "Task priority: " << task_data.priority[i] << endl << "Deadline: " << task_data.end_date[0][i] << "/" << task_data.end_date[1][i] << "/" << task_data.end_date[2][i] << endl << "Create task date: " << task_data.create_date[0][i] << "/" << task_data.create_date[1][i] << "/" << task_data.create_date[2][i] << endl;
                 }
@@ -161,10 +164,20 @@ bool cout_task_upd(Task task_data, int visible) {
         }
         
     }
+    else if (visible == 3) {
+        y1 = y;
+        if (m == 11) { m1 = 0, y1 = y + 1; }
+        else { m1 = m + 1; }
+        for (int i = 0; i < task_data.name_s; i++) {
+            if (task_data.end_date[1][i] > m && task_data.end_date[1][i] < m1 && task_data.end_date[2][i] == y1) {
+                cout << " === Task index " << i << " === " << endl;
+                cout << "Task name: " << task_data.name[i] << endl << "Task description: " << task_data.data[i] << endl << "Task priority: " << task_data.priority[i] << endl << "Deadline: " << task_data.end_date[0][i] << "/" << task_data.end_date[1][i] << "/" << task_data.end_date[2][i] << endl << "Create task date: " << task_data.create_date[0][i] << "/" << task_data.create_date[1][i] << "/" << task_data.create_date[2][i] << endl;
+            }
+        }
+    }
     
     return true;
 }
-
 
 bool delete_task(Task& task_data, int index) {
     if (index < 0 || index > task_data.name_s) { return false; }
@@ -211,6 +224,50 @@ bool find_task(Task& task_data, string search) {
     }
     return true;
 }
+
+bool sort_task(Task task_data, int sort = 0) {
+    string* name1 = new string[task_data.name_s];
+    for (int i = 0; i < task_data.name_s; i++) { name1[i] = task_data.name[i]; }
+
+    string* data1 = new string[task_data.data_s];
+    for (int i = 0; i < task_data.data_s; i++) { name1[i] = task_data.data[i]; }
+
+    int* priority1 = new int[task_data.priority_s];
+    for (int i = 0; i < task_data.priority_s; i++) { name1[i] = task_data.priority[i]; }
+
+    int** create_date1 = new int* [task_data.ROWS_D];
+    int** end_date1 = new int* [task_data.ROWS_D];
+
+    for (int i = 0; i < task_data.ROWS_D; i++) {
+        end_date1[i] = new int[task_data.COLS_D];
+        create_date1[i] = new int[task_data.COLS_D];
+    }
+    for (int i = 0; i < task_data.ROWS_D; i++) {
+        for (int j = 0; j < task_data.COLS_D; j++) { create_date1[i][j] = task_data.create_date[i][j]; }
+    }
+    for (int i = 0; i < task_data.ROWS_D; i++) {
+        for (int j = 0; j < task_data.COLS_D; j++) { end_date1[i][j] = task_data.end_date[i][j]; }
+    }
+    if (sort == 2) {
+        for (int step = 0; step < task_data.name_s - 1; ++step) {
+            for (int i = 0; i < task_data.name_s - 1; i++) {
+                if (task_data.priority[i] > task_data.priority[i + 1]) { // UP / DOWN 
+                    swap(name1[i], name1[i + 1]);
+                    swap(priority1[i], priority1[i + 1]);
+                    swap(data1[i], data1[i + 1]);
+                    swap(end_date1[i], end_date1[i + 1]);
+                    swap(create_date1[i], create_date1[i + 1]);
+                }
+            }
+        }
+    }
+    for (int i = 0; i < task_data.name_s; i++) {
+        cout << " === Task index " << i << " === " << endl;
+        cout << "Task name: " << name1[i] << endl << "Task description: " << data1[i] << endl << "Task priority: " << priority1[i] << endl << "Deadline: " << end_date1[0][i] << "/" << end_date1[1][i] << "/" << end_date1[2][i] << endl << "Create task date: " << create_date1[0][i] << "/" << create_date1[1][i] << "/" << create_date1[2][i] << endl;
+    }
+    return true;
+}
+
 
 int main()
 {
@@ -289,15 +346,29 @@ int main()
             cout_task_upd(task_data, 2);
             system("pause");
             break;
-        default:
-            //return 0;
+        case 7:
+            system("cls");
+            cout << " === Sort task === " << endl << endl;
+            sort_task(task_data, 0);
+            system("pause");
             break;
+        default:
+            delete[] task_data.name;
+            delete[] task_data.data;
+            delete[] task_data.priority;
+            for (int i = 0; i < task_data.ROWS_D; i++) {
+                delete[] task_data.end_date[i];
+                delete[] task_data.create_date[i];
+            }
+            delete[] task_data.end_date;
+            delete[] task_data.create_date;
+            return 0;
         }
     }
 
 
     //delete
-    delete[] task_data.name;
+    /*delete[] task_data.name;
     delete[] task_data.data;
     delete[] task_data.priority;
     for (int i = 0; i < task_data.ROWS_D; i++) { 
@@ -305,7 +376,7 @@ int main()
         delete[] task_data.create_date[i];
     }
     delete[] task_data.end_date;
-    delete[] task_data.create_date;
+    delete[] task_data.create_date;*/
 
 }
 
