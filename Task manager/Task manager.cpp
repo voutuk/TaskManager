@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <windows.h>
+#include <Windows.h>
 using namespace std;
 
 struct TaskData {
@@ -15,10 +15,12 @@ struct TaskData {
     string* name = new string[size];
     string* description = new string[size];
 };
+
 void txtColor(HANDLE color, int fg, int bg, string txt) {
     SetConsoleTextAttribute(color, fg | bg);
     cout << txt;
 }
+
 template <typename Type>
 void pushBack(Type*& arr, int& size, Type value) {
     Type* arrNew = new Type[size];
@@ -44,7 +46,7 @@ void cout1(TaskData task, int i, HANDLE color, int thremeColor) {
     cout << "+";
     for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
     if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
-    else {txtColor(color, 15, thremeColor, "+");}
+    else { txtColor(color, 15, thremeColor, "+"); }
     cout << endl << "| " << tmp << " " << task.name[i];
     for (int i = 0; i < max - str1; i++) { cout << " "; }
     cout << "|" << endl << "| " << task.description[i];
@@ -144,44 +146,26 @@ bool sort(TaskData& task, Type data, int sort = 0) {
     return true;
 }
 
-bool validateDate(string date, int& d, int& m, int& y) { // ПЕРЕРОБИТИ
-    int size = date.length();
-    int* arr = new int[size];
-
-    int asciiNumber[10]{ 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
-    int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-    for (int i = 0; i < size + 1; i++) { arr[i] = -1; }
-
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < 10; j++) {
-            if (date[i] == asciiNumber[j]) { arr[i] = j; }
+bool validateDate(string date, int& d, int& m, int& y) {
+    string tmpD = date, tmpM = date, tmpY = date;
+    char symbol[5]{ '.', ',', '/', '\\', '-' };
+    int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }, tmp = 0;
+    for (int i = 0; i < 5; i++) {
+        int tmp1 = date.find(symbol[i]);
+        if (tmp1 != -1) {
+            tmpD.erase(tmp1, date.size() - tmp1), ++tmp;
+            int tmp2 = date.find(symbol[i], tmp1);
+            if (date.find(symbol[i], tmp1) != -1) {
+                tmpM.erase(0, tmp1 + 1);
+                tmpM.erase(date.find(symbol[i], tmp1), date.size() - date.find(symbol[i], tmp1)), ++tmp;
+                if (date.find(symbol[i], tmp2 + 1) != -1) { tmpY.erase(0, date.find(symbol[i], tmp2 + 1) + 1); }
+            }
         }
     }
-
-    if (arr[2] == -1 && arr[5] == -1) {
-        d = arr[0] * 10 + arr[1], m = arr[3] * 10 + arr[4];
-        y = arr[6] * 1000 + arr[7] * 100 + arr[8] * 10 + arr[9];
-    }
-    else if (arr[1] == -1 && arr[4] == -1) {
-        d = arr[0], m = arr[2] * 10 + arr[3];
-        y = arr[5] * 1000 + arr[6] * 100 + arr[7] * 10 + arr[8];
-    }
-    else if (arr[2] == -1 && arr[4] == -1) {
-        d = arr[0] * 10 + arr[1], m = arr[3];
-        y = arr[5] * 1000 + arr[6] * 100 + arr[7] * 10 + arr[8];
-    }
-    else if (arr[1] == -1 && arr[3] == -1) {
-        d = arr[0], m = arr[2];
-        y = arr[4] * 1000 + arr[5] * 100 + arr[6] * 10 + arr[7];
-    }
-    else { return false; }
-    int tmp = 0;
-    for (int i = 0; i < size; i++) {
-        if (arr[i] == -1) { ++tmp; }
-    }
-    if (y % 4 == 0) { daysMax[1] = 29; }
-    if (m < 1 || m > 12 || d < 1 || d > daysMax[m - 1] || y < 1 || tmp > 2) { return false; }
+    if (tmp != 2) { return false; }
+    if (stoi(tmpY) % 4 == 0) { daysMax[1] = 29; }
+    if (stoi(tmpM) < 1 || stoi(tmpM) > 12 || stoi(tmpD) < 1 || stoi(tmpD) > daysMax[stoi(tmpM) - 1] || stoi(tmpY) < 1) { return false; }
+    d = stoi(tmpD), m = stoi(tmpM), y = stoi(tmpY);
     return true;
 }
 
@@ -349,24 +333,24 @@ int startProgram() {
         system("cls");
         cout << "1. White \n2. Black \n3. Red \n4. Blue \n5. Yellow \n Select threme: ";
         getline(cin, tmp);
-        if (tmp == "1") { 
-            system("color F0"); 
+        if (tmp == "1") {
+            system("color F0");
             thremeColor = 240;
         }
-        else if (tmp == "2") { 
+        else if (tmp == "2") {
             system("color 0F");
             thremeColor = 0;
         }
-        else if (tmp == "3") { 
-            system("color CF"); 
+        else if (tmp == "3") {
+            system("color CF");
             thremeColor = 192;
         }
-        else if (tmp == "4") { 
-            system("color 9F"); 
+        else if (tmp == "4") {
+            system("color 9F");
             thremeColor = 144;
         }
-        else if (tmp == "5") { 
-            system("color E0"); 
+        else if (tmp == "5") {
+            system("color E0");
             thremeColor = 224;
         }
     }
@@ -388,37 +372,54 @@ int main()
     while (1) {
         system("cls");
         cout << " === TEST MENU === " << endl;
-        cout << "1. New task" << endl << "2. Delete task" << endl << "3. Edit task" << endl << "4. Cout task test" << endl << "5. Find task" << endl << "6. Cout task" << endl;
+        cout << " 1. New task" << endl << " 2. Delete task" << endl << " 3. Edit task" << endl << " 4. Cout task test" << endl << " 5. Find task" << endl << " 6. Cout task" << endl;
         int tmp;
         cout << "Enter num: ";
+        int newPriority, w, h;
+        CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+        if (GetConsoleScreenBufferInfo(color, &consoleInfo)) {
+            w = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
+            h = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
+        }
         cin >> tmp;
-        string newName, newData, newDate, find;
-        int newPriority;
-
+        string newName, newData, newDate, find, select;
         switch (tmp)
         {
         case 1:
             system("cls");
             do {
-                cout << endl << " === Create task === " << endl << endl;
-                cout << "Enter name: ";
+                cout << endl;
+                for (int i = 0; i < w/2-23; i++){cout << " ";}
+                cout << " ==== Create task ==== " << endl << endl;
+                cout << " Enter name: ";
                 cin.ignore();
                 getline(cin, newName);
-                cout << "Enter description: ";
+                cout << " Enter description: ";
                 getline(cin, newData);
-                cout << "Enter priority: ";
+                cout << " Enter priority: ";
                 cin >> newPriority;
                 cin.ignore();
-                cout << "Enter deadline: ";
+                cout << " Enter deadline: ";
                 getline(cin, newDate);
             } while (createTask(task, newName, newData, newPriority, newDate) == false);
+            cout << " Successfully!" << endl;
+            system("pause");
             break;
         case 2:
             system("cls");
-            cout << " === Delete task === " << endl << endl;
-            cout << "Enter index task: ";
-            cin >> tmp;
-            if (deleteTask(task, tmp) == false) { cout << "Упс ви ввели неправельні данні!" << endl; }
+            for (int i = 0; i < w / 2 - 23; i++) { cout << " "; }
+            cout << " ==== Delete task ==== " << endl << endl;
+            while (1) {
+                cout << " Enter number task: ";
+                cin.ignore();
+                getline(cin, select);
+                if (select == "E") { break; }
+                //if (deleteTask(task, stoi(select)) == true) { break; }
+                cout << " Task not found, please try again :(" << endl;
+                cout << " Type exit to exit" << endl;
+            }
+            cout << " Successfully!" << endl;
+            system("pause");
             break;
         case 3:
             system("cls");
@@ -464,6 +465,8 @@ int main()
     }
 
 }
+
+
 
 
 
