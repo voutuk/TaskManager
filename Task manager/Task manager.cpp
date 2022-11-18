@@ -371,16 +371,16 @@ int main()
 
     while (1) {
         system("cls");
-        cout << " === TEST MENU === " << endl;
-        cout << " 1. New task" << endl << " 2. Delete task" << endl << " 3. Edit task" << endl << " 4. Cout task test" << endl << " 5. Find task" << endl << " 6. Cout task" << endl;
-        int tmp;
-        cout << "Enter num: ";
-        int newPriority, w, h;
+        int newPriority, w, h, tmp;
         CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
         if (GetConsoleScreenBufferInfo(color, &consoleInfo)) {
             w = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
             h = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
         }
+        for (int i = 0; i < w / 2 - 16; i++) { cout << " "; }
+        cout << " ==== MENU ==== " << endl << endl;
+        cout << " 1. New task" << endl << " 2. Delete task" << endl << " 3. Edit task" << endl << " 4. Cout task test" << endl << " 5. Find task" << endl << " 6. Cout task" << endl;
+        cout << "Enter num: ";
         cin >> tmp;
         string newName, newData, newDate, find, select;
         switch (tmp)
@@ -411,30 +411,67 @@ int main()
             cout << " ==== Delete task ==== " << endl << endl;
             while (1) {
                 cout << " Enter number task: ";
-                cin.ignore();
-                getline(cin, select);
-                if (select == "E") { break; }
-                //if (deleteTask(task, stoi(select)) == true) { break; }
+                cin >> tmp;
+                if (tmp == 0) { break; }
+                if (deleteTask(task, tmp) == true) { break; }
                 cout << " Task not found, please try again :(" << endl;
-                cout << " Type exit to exit" << endl;
+                cout << " Type \"0\" to exit" << endl;
             }
             cout << " Successfully!" << endl;
             system("pause");
             break;
         case 3:
             system("cls");
-            cout << " === Edit task === " << endl << endl;
-            cout << "Enter index task: ";
+            for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
+            cout << " ==== Edit task ==== " << endl << endl;
+            cout << " 2. Name \n 3. Description \n 4. Priority \n 5. Deadline \n 6.All \n Select an option: ";
             cin >> tmp;
-            cout << "Enter name: ";
-            cin >> newName;
-            cout << "Enter description: ";
-            cin >> newData;
-            cout << "Enter priority: ";
-            cin >> newPriority;
-            cout << "Enter deadline: ";
-            cin >> newDate;
-            if (editTask(task, tmp, newName, newData, newPriority, newDate) == false) { cout << "Упс ви ввели неправельні данні!" << endl; }
+            if (tmp == 2) {
+                cout << " Enter number task: ";
+                cin >> tmp;
+                cout << " Enter name: ";
+                cin >> newName;
+                if (editTask(task, tmp, newName, "", 0, "") == false) { cout << "You have entered incorrect data :(" << endl; }
+            }
+            else if (tmp == 3) {
+                cout << " Enter number task: ";
+                cin >> tmp;
+                cout << " Enter description: ";
+                cin >> newData;
+                if (editTask(task, tmp, "", newData, 0, "") == false) { cout << "You have entered incorrect data :(" << endl; }
+            }
+            else if (tmp == 4) {
+                cout << " Enter number task: ";
+                cin >> tmp;
+                cout << " Enter priority: ";
+                cin >> newPriority;
+                if (editTask(task, tmp, "", "", newPriority, "") == false) { cout << "You have entered incorrect data :(" << endl; }
+            }
+            else if (tmp == 5) {
+                cout << " Enter number task: ";
+                cin >> tmp;
+                cout << " Enter deadline: ";
+                cin >> newDate;
+                if (editTask(task, tmp, "", "", 0, newDate) == false) { cout << "You have entered incorrect data :(" << endl; }
+            }
+            else if (tmp == 6) {
+                cout << " Enter number task: ";
+                cin >> tmp;
+                cout << " Enter name: ";
+                cin >> newName;
+                cout << " Enter description: ";
+                cin >> newData;
+                cout << " Enter priority: ";
+                cin >> newPriority;
+                cout << " Enter deadline: ";
+                cin >> newDate;
+                if (editTask(task, tmp, newName, newData, newPriority, newDate) == false) { cout << "You have entered incorrect data :(" << endl; }
+            }
+            else {
+                cout << "You have entered incorrect data :(" << endl;
+            }
+            cout << " Successfully!" << endl;
+            system("pause");
             break;
         case 4:
             system("cls");
