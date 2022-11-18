@@ -14,7 +14,6 @@ struct TaskData {
     int** deadline = new int* [ROWS];
     string* name = new string[size];
     string* description = new string[size];
-
 };
 void txtColor(HANDLE color, int fg, int bg, string txt) {
     SetConsoleTextAttribute(color, fg | bg);
@@ -29,7 +28,7 @@ void pushBack(Type*& arr, int& size, Type value) {
     arr = arrNew;
 }
 
-void cout1(TaskData task, int i, HANDLE color) {
+void cout1(TaskData task, int i, HANDLE color, int thremeColor) {
     int tmp = task.index[i];
     int tmp2 = task.priority[i];
     string deadline = to_string(task.deadline[0][i]) + "/" + to_string(task.deadline[1][i]) + "/" + to_string(task.deadline[2][i]);
@@ -43,8 +42,9 @@ void cout1(TaskData task, int i, HANDLE color) {
     int str4 = create.length() + 2;
     int max = max(str2, max(str3, max(str4, str1)));
     cout << "+";
-    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, 192, "-"); }
-    txtColor(color, 15, 192, "+");
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
+    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
+    else {txtColor(color, 15, thremeColor, "+");}
     cout << endl << "| " << tmp << " " << task.name[i];
     for (int i = 0; i < max - str1; i++) { cout << " "; }
     cout << "|" << endl << "| " << task.description[i];
@@ -54,8 +54,9 @@ void cout1(TaskData task, int i, HANDLE color) {
     cout << " |" << endl << "| " << create;
     for (int i = 0; i < max - str4; i++) { cout << " "; }
     cout << " |" << endl << "+";
-    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, 192, "-"); }
-    txtColor(color, 15, 192, "+");
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
+    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
+    else { txtColor(color, 15, thremeColor, "+"); }
 }
 
 void pushBack2D(int**& arr, int ROWS, int& COLS, int data1, int data2, int data3) {
@@ -200,7 +201,7 @@ bool createTask(TaskData& task, string newName, string newData, int newPriority,
     return true;
 }
 
-bool coutTask(TaskData task, HANDLE color) {
+bool coutTask(TaskData task, HANDLE color, int thremeColor) {
     string tmp;
     cout << "[A] Назва \n[B] Дедлайн \n[C] Дата створення \n[D] День \n[E] Неділя \n[F] Місяць" << endl;
     cin.ignore();
@@ -214,7 +215,7 @@ bool coutTask(TaskData task, HANDLE color) {
     if (tmp.find("D") != -1) {
         for (int i = 0; i < task.size; i++) {
             if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-                cout1(task, i, color);
+                cout1(task, i, color, thremeColor);
                 cout << endl;
             }
         }
@@ -226,7 +227,7 @@ bool coutTask(TaskData task, HANDLE color) {
             else { m1 = m + 1; }
             for (int i = 0; i < task.size; i++) {
                 if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m1 && task.deadline[2][i] == y1) {
-                    cout1(task, i, color);
+                    cout1(task, i, color, thremeColor);
                     cout << endl;
 
                 }
@@ -236,7 +237,7 @@ bool coutTask(TaskData task, HANDLE color) {
             d1 = d + 7;
             for (int i = 0; i < task.size; i++) {
                 if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-                    cout1(task, i, color);
+                    cout1(task, i, color, thremeColor);
                     cout << endl;
 
                 }
@@ -249,21 +250,20 @@ bool coutTask(TaskData task, HANDLE color) {
         else { m1 = m + 1; }
         for (int i = 0; i < task.size; i++) {
             if (task.deadline[1][i] > m && task.deadline[1][i] < m1 && task.deadline[2][i] == y1) {
-                cout1(task, i, color);
+                cout1(task, i, color, thremeColor);
                 cout << endl;
             }
         }
     }
     else {
         for (int i = 0; i < task.size; i++) {
-            cout1(task, i, color);
+            cout1(task, i, color, thremeColor);
             cout << endl;
         }
     }
 
     return true;
 }
-
 
 bool deleteTask(TaskData& task, int number) {
     for (int i = 0; i < task.size; i++) {
@@ -333,34 +333,50 @@ bool findTask(TaskData& task, string search) {
     }
     return true;
 }
-int startProgram(int language) {
+
+int startProgram() {
+    int thremeColor;
     string tmp;
-    do{
+    /*do {
         system("cls");
         cout << "The settings file is not found, so you need to create a new one. \n1. Ukrainian \n2. English \nChoose a language: ";
         getline(cin, tmp);
-    } while (tmp != "1" && tmp != "2");
-    if (tmp == "1") { language = 1; }
-    else { language = 2; }
+    } while (tmp != "2");
+    if (tmp == "2") { language = 2; }
+    else { language = 2; }*/
 
     while (tmp != "y" && tmp != "Y") {
         system("cls");
-        cout << "1. Біла \n2. Чорна \n3. Червона \n4. Синя \n5. Жовта \n Виберіть тему: ";
+        cout << "1. White \n2. Black \n3. Red \n4. Blue \n5. Yellow \n Select threme: ";
         getline(cin, tmp);
-        if (tmp == "1") { system("color F0"); }
-        else if (tmp == "2") { system("color 0F"); }
-        else if (tmp == "3") { system("color CF"); }
-        else if (tmp == "4") { system("color 9F"); }
-        else if (tmp == "5") { system("color E0"); }
+        if (tmp == "1") { 
+            system("color F0"); 
+            thremeColor = 240;
+        }
+        else if (tmp == "2") { 
+            system("color 0F");
+            thremeColor = 0;
+        }
+        else if (tmp == "3") { 
+            system("color CF"); 
+            thremeColor = 192;
+        }
+        else if (tmp == "4") { 
+            system("color 9F"); 
+            thremeColor = 144;
+        }
+        else if (tmp == "5") { 
+            system("color E0"); 
+            thremeColor = 224;
+        }
     }
     system("cls");
-    return language;
+    return thremeColor;
 }
 
 int main()
 {
-    int language = 0;
-    startProgram(language);
+    int thremeColor = startProgram();
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
     TaskData task;
 
@@ -384,7 +400,7 @@ int main()
         case 1:
             system("cls");
             do {
-                cout << endl << " === Нове завдання === " << endl << endl;
+                cout << endl << " === Create task === " << endl << endl;
                 cout << "Enter name: ";
                 cin.ignore();
                 getline(cin, newName);
@@ -422,7 +438,7 @@ int main()
         case 4:
             system("cls");
             cout << " === Cout task TEST === " << endl << endl;
-            coutTask(task, color);
+            coutTask(task, color, thremeColor);
             system("pause");
             break;
             /*
