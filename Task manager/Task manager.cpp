@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-//#pragma warning(disable : 4996)
+#include <windows.h>
 using namespace std;
 
 struct TaskData {
@@ -16,15 +16,46 @@ struct TaskData {
     string* description = new string[size];
 
 };
-
+void txtColor(HANDLE color, int fg, int bg, string txt) {
+    SetConsoleTextAttribute(color, fg | bg);
+    cout << txt;
+}
 template <typename Type>
 void pushBack(Type*& arr, int& size, Type value) {
-    //size++;
     Type* arrNew = new Type[size];
     for (int i = 0; i < size - 1; i++) { arrNew[i] = arr[i]; }
     arrNew[size - 1] = value;
     delete[] arr;
     arr = arrNew;
+}
+
+void cout1(TaskData task, int i, HANDLE color) {
+    int tmp = task.index[i];
+    int tmp2 = task.priority[i];
+    string deadline = to_string(task.deadline[0][i]) + "/" + to_string(task.deadline[1][i]) + "/" + to_string(task.deadline[2][i]);
+    string create = to_string(task.createDate[0][i]) + "/" + to_string(task.createDate[1][i]) + "/" + to_string(task.createDate[2][i]);
+
+    int str1 = 3 + task.name[i].length();
+    while ((task.index[i] /= 10) > 0) str1++;
+    int str2 = task.description[i].length() + 2;
+    int str3 = 4 + deadline.length();
+    while ((task.priority[i] /= 10) > 0) str3++;
+    int str4 = create.length() + 2;
+    int max = max(str2, max(str3, max(str4, str1)));
+    cout << "+";
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, 192, "-"); }
+    txtColor(color, 15, 192, "+");
+    cout << endl << "| " << tmp << " " << task.name[i];
+    for (int i = 0; i < max - str1; i++) { cout << " "; }
+    cout << "|" << endl << "| " << task.description[i];
+    for (int i = 0; i < max - str2; i++) { cout << " "; }
+    cout << " |" << endl << "| " << tmp2 << " " << deadline;
+    for (int i = 0; i < max - str3; i++) { cout << " "; }
+    cout << " |" << endl << "| " << create;
+    for (int i = 0; i < max - str4; i++) { cout << " "; }
+    cout << " |" << endl << "+";
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, 192, "-"); }
+    txtColor(color, 15, 192, "+");
 }
 
 void pushBack2D(int**& arr, int ROWS, int& COLS, int data1, int data2, int data3) {
@@ -112,16 +143,6 @@ bool sort(TaskData& task, Type data, int sort = 0) {
     return true;
 }
 
-void cls() {
-    system("clear");
-}
-
-void pause() {
-    cout << endl << "Тицьніть любу клавішу для продовження...";
-    int tmp;
-    cin >> tmp;
-}
-
 bool validateDate(string date, int& d, int& m, int& y) { // ПЕРЕРОБИТИ
     int size = date.length();
     int* arr = new int[size];
@@ -179,7 +200,7 @@ bool createTask(TaskData& task, string newName, string newData, int newPriority,
     return true;
 }
 
-bool coutTask(TaskData task) {
+bool coutTask(TaskData task, HANDLE color) {
     string tmp;
     cout << "[A] Назва \n[B] Дедлайн \n[C] Дата створення \n[D] День \n[E] Неділя \n[F] Місяць" << endl;
     cin.ignore();
@@ -193,8 +214,8 @@ bool coutTask(TaskData task) {
     if (tmp.find("D") != -1) {
         for (int i = 0; i < task.size; i++) {
             if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-                cout << " === Task index " << task.index[i] << " === " << endl;
-                cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
+                cout1(task, i, color);
+                cout << endl;
             }
         }
     }
@@ -205,8 +226,9 @@ bool coutTask(TaskData task) {
             else { m1 = m + 1; }
             for (int i = 0; i < task.size; i++) {
                 if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m1 && task.deadline[2][i] == y1) {
-                    cout << " === Task index " << task.index[i] << " === " << endl;
-                    cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
+                    cout1(task, i, color);
+                    cout << endl;
+
                 }
             }
         }
@@ -214,8 +236,9 @@ bool coutTask(TaskData task) {
             d1 = d + 7;
             for (int i = 0; i < task.size; i++) {
                 if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-                    cout << " === Task index " << task.index[i] << " === " << endl;
-                    cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
+                    cout1(task, i, color);
+                    cout << endl;
+
                 }
             }
         }
@@ -226,15 +249,15 @@ bool coutTask(TaskData task) {
         else { m1 = m + 1; }
         for (int i = 0; i < task.size; i++) {
             if (task.deadline[1][i] > m && task.deadline[1][i] < m1 && task.deadline[2][i] == y1) {
-                cout << " === Task index " << task.index[i] << " === " << endl;
-                cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
+                cout1(task, i, color);
+                cout << endl;
             }
         }
     }
     else {
         for (int i = 0; i < task.size; i++) {
-            cout << " === Task index " << task.index[i] << " === " << endl;
-            cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
+            cout1(task, i, color);
+            cout << endl;
         }
     }
 
@@ -310,18 +333,44 @@ bool findTask(TaskData& task, string search) {
     }
     return true;
 }
+int startProgram(int language) {
+    string tmp;
+    do{
+        system("cls");
+        cout << "The settings file is not found, so you need to create a new one. \n1. Ukrainian \n2. English \nChoose a language: ";
+        getline(cin, tmp);
+    } while (tmp != "1" && tmp != "2");
+    if (tmp == "1") { language = 1; }
+    else { language = 2; }
 
+    while (tmp != "y" && tmp != "Y") {
+        system("cls");
+        cout << "1. Біла \n2. Чорна \n3. Червона \n4. Синя \n5. Жовта \n Виберіть тему: ";
+        getline(cin, tmp);
+        if (tmp == "1") { system("color F0"); }
+        else if (tmp == "2") { system("color 0F"); }
+        else if (tmp == "3") { system("color CF"); }
+        else if (tmp == "4") { system("color 9F"); }
+        else if (tmp == "5") { system("color E0"); }
+    }
+    system("cls");
+    return language;
+}
 
 int main()
 {
+    int language = 0;
+    startProgram(language);
+    HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
     TaskData task;
+
     for (int i = 0; i < task.ROWS; i++) {
         task.deadline[i] = new int[task.size];
         task.createDate[i] = new int[task.size];
     }
 
     while (1) {
-        cls();
+        system("cls");
         cout << " === TEST MENU === " << endl;
         cout << "1. New task" << endl << "2. Delete task" << endl << "3. Edit task" << endl << "4. Cout task test" << endl << "5. Find task" << endl << "6. Cout task" << endl;
         int tmp;
@@ -333,7 +382,7 @@ int main()
         switch (tmp)
         {
         case 1:
-            cls();
+            system("cls");
             do {
                 cout << endl << " === Нове завдання === " << endl << endl;
                 cout << "Enter name: ";
@@ -349,14 +398,14 @@ int main()
             } while (createTask(task, newName, newData, newPriority, newDate) == false);
             break;
         case 2:
-            cls();
+            system("cls");
             cout << " === Delete task === " << endl << endl;
             cout << "Enter index task: ";
             cin >> tmp;
             if (deleteTask(task, tmp) == false) { cout << "Упс ви ввели неправельні данні!" << endl; }
             break;
         case 3:
-            cls();
+            system("cls");
             cout << " === Edit task === " << endl << endl;
             cout << "Enter index task: ";
             cin >> tmp;
@@ -371,14 +420,14 @@ int main()
             if (editTask(task, tmp, newName, newData, newPriority, newDate) == false) { cout << "Упс ви ввели неправельні данні!" << endl; }
             break;
         case 4:
-            cls();
+            system("cls");
             cout << " === Cout task TEST === " << endl << endl;
-            coutTask(task);
-            pause();
+            coutTask(task, color);
+            system("pause");
             break;
             /*
             case 5:
-                cls();
+                system("cls");
                 cout << " === Find task === " << endl << endl;
                 cout << "Enter: ";
                 cin >> find;
@@ -386,7 +435,7 @@ int main()
                 pause();
                 break;
             case 6:
-                cls();
+                system("cls");
                 cout << " === Cout task === " << endl << endl;
                 coutTaskUpd(task, 2);
                 pause();
