@@ -34,11 +34,11 @@ void pushBack2D(int**& arr, int ROWS, int& COLS, int data1, int data2, int data3
         tmp_arr[i] = new int[COLS];
         for (int j = 0; j < COLS - 1; j++) { tmp_arr[i][j] = arr[i][j]; }
     }
-    
+
     tmp_arr[0][COLS - 1] = data1;
     tmp_arr[1][COLS - 1] = data2;
     tmp_arr[2][COLS - 1] = data3;
-    
+
     delete[] arr;
     arr = tmp_arr;
 }
@@ -69,53 +69,54 @@ void del2D(int**& arr, int ROWS, int& COLS, int ind) {
     arr = tmp_arr;
 }
 
-int dateSort(int d, int m, int y){
+int dateSort(int d, int m, int y) {
     int days_max[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     int days = d;
-    for(int i = y; i>=1; i--){
-        for(int j = 0; j < m; j++) { days += days_max[m-1]; }
+    for (int i = y; i >= 1; i--) {
+        for (int j = 0; j < m; j++) { days += days_max[m - 1]; }
     }
     return days;
 }
 
 template <typename Type>
-bool sort(TaskData& task, Type data, int sort = 0){
+bool sort(TaskData& task, Type data, int sort = 0) {
     for (int step = 0; step < task.size - 1; ++step) {
         for (int i = 0; i < task.size - 1; i++) {
-            if(sort == 0){
+            if (sort == 0) {
                 if (data[i] > data[i + 1]) {
-                swap(task.priority[i], task.priority[i + 1]);
-                swap(task.index[i], task.index[i + 1]);
-                swap(task.createDateSize[i], task.createDateSize[i + 1]);
-                swap(task.deadlineSize[i], task.deadlineSize[i + 1]);
-                swap(task.createDate[i], task.createDate[i + 1]);
-                swap(task.deadline[i], task.deadline[i + 1]);
-                swap(task.name[i], task.name[i + 1]);
-                swap(task.description[i], task.description[i + 1]);
-                }
-            } else {
-                if (data[i] < data[i + 1]) {
-                swap(task.priority[i], task.priority[i + 1]);
-                swap(task.index[i], task.index[i + 1]);
-                swap(task.createDateSize[i], task.createDateSize[i + 1]);
-                swap(task.deadlineSize[i], task.deadlineSize[i + 1]);
-                swap(task.createDate[i], task.createDate[i + 1]);
-                swap(task.deadline[i], task.deadline[i + 1]);
-                swap(task.name[i], task.name[i + 1]);
-                swap(task.description[i], task.description[i + 1]);
+                    swap(task.priority[i], task.priority[i + 1]);
+                    swap(task.index[i], task.index[i + 1]);
+                    swap(task.createDateSize[i], task.createDateSize[i + 1]);
+                    swap(task.deadlineSize[i], task.deadlineSize[i + 1]);
+                    swap(task.createDate[i], task.createDate[i + 1]);
+                    swap(task.deadline[i], task.deadline[i + 1]);
+                    swap(task.name[i], task.name[i + 1]);
+                    swap(task.description[i], task.description[i + 1]);
                 }
             }
-            
+            else {
+                if (data[i] < data[i + 1]) {
+                    swap(task.priority[i], task.priority[i + 1]);
+                    swap(task.index[i], task.index[i + 1]);
+                    swap(task.createDateSize[i], task.createDateSize[i + 1]);
+                    swap(task.deadlineSize[i], task.deadlineSize[i + 1]);
+                    swap(task.createDate[i], task.createDate[i + 1]);
+                    swap(task.deadline[i], task.deadline[i + 1]);
+                    swap(task.name[i], task.name[i + 1]);
+                    swap(task.description[i], task.description[i + 1]);
+                }
+            }
+
         }
     }
     return true;
 }
 
-void cls(){
+void cls() {
     system("clear");
 }
 
-void pause(){
+void pause() {
     cout << endl << "Тицьніть любу клавішу для продовження...";
     int tmp;
     cin >> tmp;
@@ -139,19 +140,23 @@ bool validateDate(string date, int& d, int& m, int& y) { // ПЕРЕРОБИТИ
     if (arr[2] == -1 && arr[5] == -1) {
         d = arr[0] * 10 + arr[1], m = arr[3] * 10 + arr[4];
         y = arr[6] * 1000 + arr[7] * 100 + arr[8] * 10 + arr[9];
-    } else if (arr[1] == -1 && arr[4] == -1) {
+    }
+    else if (arr[1] == -1 && arr[4] == -1) {
         d = arr[0], m = arr[2] * 10 + arr[3];
         y = arr[5] * 1000 + arr[6] * 100 + arr[7] * 10 + arr[8];
-    } else if (arr[2] == -1 && arr[4] == -1) {
+    }
+    else if (arr[2] == -1 && arr[4] == -1) {
         d = arr[0] * 10 + arr[1], m = arr[3];
         y = arr[5] * 1000 + arr[6] * 100 + arr[7] * 10 + arr[8];
-    } else if (arr[1] == -1 && arr[3] == -1) {
+    }
+    else if (arr[1] == -1 && arr[3] == -1) {
         d = arr[0], m = arr[2];
         y = arr[4] * 1000 + arr[5] * 100 + arr[6] * 10 + arr[7];
-    } else { return false; }
+    }
+    else { return false; }
     int tmp = 0;
-    for(int i =0; i < size; i++){
-        if (arr[i] == -1){ ++tmp; }
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == -1) { ++tmp; }
     }
     if (y % 4 == 0) { daysMax[1] = 29; }
     if (m < 1 || m > 12 || d < 1 || d > daysMax[m - 1] || y < 1 || tmp > 2) { return false; }
@@ -163,9 +168,9 @@ bool createTask(TaskData& task, string newName, string newData, int newPriority,
     int d, m, y;
     if (validateDate(newDate, d, m, y) == false) { return false; } // Valitade date
     task.size++;
-    pushBack(task.name, task.size, newName); 
+    pushBack(task.name, task.size, newName);
     pushBack(task.description, task.size, newData);
-    pushBack(task.priority, task.size, newPriority); 
+    pushBack(task.priority, task.size, newPriority);
     pushBack2D(task.deadline, task.ROWS, task.size, d, m, y);
     pushBack2D(task.createDate, task.ROWS, task.size, 1, 04, 1996);
     pushBack(task.index, task.size, task.size);
@@ -179,9 +184,9 @@ bool coutTask(TaskData task) {
     cout << "[A] Назва \n[B] Дедлайн \n[C] Дата створення \n[D] День \n[E] Неділя \n[F] Місяць" << endl;
     cin.ignore();
     getline(cin, tmp);
-    if(tmp.find("A") != -1) { sort(task, task.name); }
-    else if(tmp.find("C") != -1) { sort(task, task.createDateSize); }
-    else if(tmp.find("B") != -1) { sort(task, task.deadlineSize); }
+    if (tmp.find("A") != -1) { sort(task, task.name); }
+    else if (tmp.find("C") != -1) { sort(task, task.createDateSize); }
+    else if (tmp.find("B") != -1) { sort(task, task.deadlineSize); }
     int d = task.createDate[0][0], m = task.createDate[1][0], y = task.createDate[2][0], d1, m1, y1;  // Переписать
     int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if (y % 4 == 0) { daysMax[1] = 29; }
@@ -192,7 +197,8 @@ bool coutTask(TaskData task) {
                 cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
             }
         }
-    } else if (tmp.find("E") != -1){
+    }
+    else if (tmp.find("E") != -1) {
         if (d + 7 > daysMax[m - 1]) {
             d1 = d + 7 - daysMax[m - 1], y1 = y;
             if (m == 11) { m1 = 0, y1 = y + 1; }
@@ -203,7 +209,8 @@ bool coutTask(TaskData task) {
                     cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
                 }
             }
-        }else {
+        }
+        else {
             d1 = d + 7;
             for (int i = 0; i < task.size; i++) {
                 if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m && task.deadline[2][i] == y) {
@@ -212,7 +219,8 @@ bool coutTask(TaskData task) {
                 }
             }
         }
-    } else if(tmp.find("F") != -1){
+    }
+    else if (tmp.find("F") != -1) {
         y1 = y;
         if (m == 11) { m1 = 0, y1 = y + 1; }
         else { m1 = m + 1; }
@@ -222,24 +230,25 @@ bool coutTask(TaskData task) {
                 cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
             }
         }
-    } else {
+    }
+    else {
         for (int i = 0; i < task.size; i++) {
             cout << " === Task index " << task.index[i] << " === " << endl;
             cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
         }
     }
-    
+
     return true;
 }
 
 
 bool deleteTask(TaskData& task, int number) {
-    for(int i = 0; i < task.size; i++){
-        if(task.index[i] == number){
+    for (int i = 0; i < task.size; i++) {
+        if (task.index[i] == number) {
             --task.size;
-            del(task.name, task.size, i); 
+            del(task.name, task.size, i);
             del(task.description, task.size, i);
-            del(task.priority, task.size, i); 
+            del(task.priority, task.size, i);
             del2D(task.deadline, task.ROWS, task.size, i);
             del2D(task.createDate, task.ROWS, task.size, i);
             del(task.index, task.size, i);
@@ -252,8 +261,8 @@ bool deleteTask(TaskData& task, int number) {
 }
 
 bool editTask(TaskData& task, int number, string editName, string editDescription, int editPriority, string editNewDate) {
-    for(int i = 0; i < task.size; i++){
-        if(task.index[i] == number){
+    for (int i = 0; i < task.size; i++) {
+        if (task.index[i] == number) {
             if (editName != "") { task.name[i] = editName; }
             if (editDescription != "") { task.description[i] = editDescription; }
             if (editPriority != 0) {
@@ -276,24 +285,24 @@ bool editTask(TaskData& task, int number, string editName, string editDescriptio
 bool findTask(TaskData& task, string search) {
     int d, m, y;
     bool a = validateDate(search, d, m, y);
-    for(int i = 0; i < task.size; i++){
-        if(task.name[i].find(search) != -1){
+    for (int i = 0; i < task.size; i++) {
+        if (task.name[i].find(search) != -1) {
             cout << " === Task index " << task.index[i] << " === " << endl;
             cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
         }
-        if(task.description[i].find(search) != -1){
+        if (task.description[i].find(search) != -1) {
             cout << " === Task index " << task.index[i] << " === " << endl;
             cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
         }
-        if(task.priority[i] == stoi(search)){
+        if (task.priority[i] == stoi(search)) {
             cout << " === Task index " << task.index[i] << " === " << endl;
             cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
         }
-        if(a == true){
-            if(task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y){
+        if (a == true) {
+            if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
                 cout << " === Task index " << task.index[i] << " === " << endl;
                 cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
-            } if(task.createDate[0][i] == d && task.createDate[1][i] == m && task.createDate[2][i] == y){
+            } if (task.createDate[0][i] == d && task.createDate[1][i] == m && task.createDate[2][i] == y) {
                 cout << " === Task index " << task.index[i] << " === " << endl;
                 cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
             }
@@ -325,19 +334,19 @@ int main()
         {
         case 1:
             cls();
-            do{
-            cout << endl << " === Нове завдання === " << endl << endl;
-            cout << "Enter name: ";
-            cin.ignore();
-            getline(cin, newName);
-            cout << "Enter description: ";
-            getline(cin, newData);
-            cout << "Enter priority: ";
-            cin >> newPriority;
-            cin.ignore();
-            cout << "Enter deadline: ";
-            getline(cin, newDate);
-            } while(createTask(task, newName, newData, newPriority, newDate) == false);
+            do {
+                cout << endl << " === Нове завдання === " << endl << endl;
+                cout << "Enter name: ";
+                cin.ignore();
+                getline(cin, newName);
+                cout << "Enter description: ";
+                getline(cin, newData);
+                cout << "Enter priority: ";
+                cin >> newPriority;
+                cin.ignore();
+                cout << "Enter deadline: ";
+                getline(cin, newDate);
+            } while (createTask(task, newName, newData, newPriority, newDate) == false);
             break;
         case 2:
             cls();
@@ -367,22 +376,22 @@ int main()
             coutTask(task);
             pause();
             break;
-        /*
-        case 5:
-            cls();
-            cout << " === Find task === " << endl << endl;
-            cout << "Enter: ";
-            cin >> find;
-            findTask(task, find);
-            pause();
-            break;
-        case 6:
-            cls();
-            cout << " === Cout task === " << endl << endl;
-            coutTaskUpd(task, 2);
-            pause();
-            break;
-        */
+            /*
+            case 5:
+                cls();
+                cout << " === Find task === " << endl << endl;
+                cout << "Enter: ";
+                cin >> find;
+                findTask(task, find);
+                pause();
+                break;
+            case 6:
+                cls();
+                cout << " === Cout task === " << endl << endl;
+                coutTaskUpd(task, 2);
+                pause();
+                break;
+            */
         default:
             // Delete
             return 0;
@@ -390,3 +399,9 @@ int main()
     }
 
 }
+
+
+
+
+
+
