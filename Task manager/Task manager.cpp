@@ -64,7 +64,6 @@ void cout1(TaskData task, int i, HANDLE color, int thremeColor) {
 }
 
 void pushBack2D(int**& arr, int ROWS, int& COLS, int data1, int data2, int data3) {
-    //++COLS;
     int** tmp_arr = new int* [ROWS];
     for (int i = 0; i < ROWS; i++) {
         tmp_arr[i] = new int[COLS];
@@ -81,7 +80,6 @@ void pushBack2D(int**& arr, int ROWS, int& COLS, int data1, int data2, int data3
 
 template <typename Type>
 void del(Type*& arr, int& size, int index) {
-    //size--;
     Type* arrNew = new Type[size];
     for (int i = 0; i < size; i++) {
         if (i < index) { arrNew[i] = arr[i]; }
@@ -92,7 +90,6 @@ void del(Type*& arr, int& size, int index) {
 }
 
 void del2D(int**& arr, int ROWS, int& COLS, int ind) {
-    //--COLS;
     int** tmp_arr = new int* [ROWS];
     for (int i = 0; i < ROWS; i++) {
         tmp_arr[i] = new int[COLS];
@@ -106,10 +103,10 @@ void del2D(int**& arr, int ROWS, int& COLS, int ind) {
 }
 
 int dateSort(int d, int m, int y) {
-    int days_max[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     int days = d;
     for (int i = y; i >= 1; i--) {
-        for (int j = 0; j < m; j++) { days += days_max[m - 1]; }
+        for (int j = 0; j < m; j++) { days += daysMax[m - 1]; }
     }
     return days;
 }
@@ -142,7 +139,6 @@ bool sort(TaskData& task, Type data, int sort = 0) {
                     swap(task.description[i], task.description[i + 1]);
                 }
             }
-
         }
     }
     return true;
@@ -174,7 +170,7 @@ bool validateDate(string date, int& d, int& m, int& y) {
 bool createTask(TaskData& task, string newName, string newData, int newPriority, string newDate) {
     if (newPriority < 1 || newPriority > 5) { return false; }
     int d, m, y;
-    if (validateDate(newDate, d, m, y) == false) { return false; } // Valitade date
+    if (validateDate(newDate, d, m, y) == false) { return false; }
     task.size++;
     pushBack(task.name, task.size, newName);
     pushBack(task.description, task.size, newData);
@@ -188,22 +184,22 @@ bool createTask(TaskData& task, string newName, string newData, int newPriority,
 }
 
 bool coutTask(TaskData task, HANDLE color, int thremeColor, string select) {
-    if (select.find("N") != -1) { 
+    if (select.find("N") != -1 || select.find("n") != -1) {
         if (select.find(">") != -1) {sort(task, task.name, 1);}
         else { sort(task, task.name, 0);  }
     }
-    else if (select.find("C") != -1) { 
+    else if (select.find("C") != -1 || select.find("c") != -1) {
         if (select.find(">") != -1) { sort(task, task.name, 1); }
         else { sort(task, task.createDateSize, 0); }
     }
-    else if (select.find("E") != -1) { 
-        if (select.find(">") != -1) { sort(task, task.deadlineSize, 0); }
-        else { sort(task, task.name, 1); }
+    else if (select.find("E") != -1 || select.find("e") != -1) {
+        if (select.find(">") != -1) { sort(task, task.deadlineSize, 1); }
+        else { sort(task, task.name, 0); }
     }
     int d = task.createDate[0][0], m = task.createDate[1][0], y = task.createDate[2][0], d1, m1, y1;
     int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if (y % 4 == 0) { daysMax[1] = 29; }
-    if (select.find("D") != -1) {
+    if (select.find("D") != -1 || select.find("d") != -1) {
         for (int i = 0; i < task.size; i++) {
             if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
                 cout1(task, i, color, thremeColor);
@@ -211,7 +207,7 @@ bool coutTask(TaskData task, HANDLE color, int thremeColor, string select) {
             }
         }
     }
-    else if (select.find("W") != -1) {
+    else if (select.find("W") != -1 || select.find("w") != -1) {
         if (d + 7 > daysMax[m - 1]) {
             d1 = d + 7 - daysMax[m - 1], y1 = y;
             if (m == 11) { m1 = 0, y1 = y + 1; }
@@ -235,7 +231,7 @@ bool coutTask(TaskData task, HANDLE color, int thremeColor, string select) {
             }
         }
     }
-    else if (select.find("M") != -1) {
+    else if (select.find("M") != -1 || select.find("M") != -1) {
         y1 = y;
         if (m == 11) { m1 = 0, y1 = y + 1; }
         else { m1 = m + 1; }
@@ -298,32 +294,19 @@ bool editTask(TaskData& task, int number, string editName, string editDescriptio
     return false;
 }
 
-bool findTask(TaskData& task, string search) {
+bool findTask(TaskData& task, HANDLE color, string search, int thremeColor) {
     int d, m, y;
     bool a = validateDate(search, d, m, y);
     for (int i = 0; i < task.size; i++) {
-        if (task.name[i].find(search) != -1) {
-            cout << " === Task index " << task.index[i] << " === " << endl;
-            cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
-        }
-        if (task.description[i].find(search) != -1) {
-            cout << " === Task index " << task.index[i] << " === " << endl;
-            cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
-        }
-        if (task.priority[i] == stoi(search)) {
-            cout << " === Task index " << task.index[i] << " === " << endl;
-            cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
-        }
+        if (task.name[i].find(search) != -1) { cout1(task, i, color, thremeColor); }
+        if (task.description[i].find(search) != -1) { cout1(task, i, color, thremeColor); }
+        //if (task.priority[i] == stoi(search)) { cout1(task, i, color, thremeColor); }
         if (a == true) {
-            if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-                cout << " === Task index " << task.index[i] << " === " << endl;
-                cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
-            } if (task.createDate[0][i] == d && task.createDate[1][i] == m && task.createDate[2][i] == y) {
-                cout << " === Task index " << task.index[i] << " === " << endl;
-                cout << "Task name: " << task.name[i] << endl << "Task description: " << task.description[i] << endl << "Task priority: " << task.priority[i] << endl << "Deadline: " << task.deadline[0][i] << "/" << task.deadline[1][i] << "/" << task.deadline[2][i] << endl << "Create task date: " << task.createDate[0][i] << "/" << task.createDate[1][i] << "/" << task.createDate[2][i] << endl;
-            }
+            if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) { cout1(task, i, color, thremeColor); }
+            if (task.createDate[0][i] == d && task.createDate[1][i] == m && task.createDate[2][i] == y) { cout1(task, i, color, thremeColor); }
         }
     }
+    cout << endl;
     return true;
 }
 
@@ -397,12 +380,12 @@ int main()
         switch (tmp){
         case 1:
             system("cls");
+            cin.ignore();
             do {
                 cout << endl;
                 for (int i = 0; i < w/2-23; i++){cout << " ";}
                 cout << " ==== Create task ==== " << endl << endl;
                 cout << " Enter name: ";
-                cin.ignore();
                 getline(cin, newName);
                 cout << " Enter description: ";
                 getline(cin, newData);
@@ -503,20 +486,36 @@ int main()
             cout << " Successfully!" << endl;
             system("pause");
             break;
+        case 5:
+            system("cls");
+            for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
+            cout << endl;
+            cout << " ==== Find task ==== \n\n";
+            cout << " > Enter a search query: ";
+            cin.ignore();
+            getline(cin, select);
+            findTask(task, color, select, thremeColor);
+            cout << " Successfully!" << endl;
+            system("pause");
+            break;
         case 6:
-            txtColor(color,  4, 240, " Exit ");
+            txtColor(color, 4, 240, " Exit ");
+            delete[] task.priority;
+            delete[] task.index;
+            delete[] task.createDateSize;
+            delete[] task.deadlineSize;
+            for (int i = 0; i < task.ROWS; i++) {
+                delete[] task.createDate[i];
+                delete[] task.deadline[i];
+            }
+            delete[] task.createDate;
+            delete[] task.deadline;
+            delete[] task.name;
+            delete[] task.description;
+            return 0;
         default:
-            // Delete
             return 0;
         }
     }
 
 }
-
-
-
-
-
-
-
-
