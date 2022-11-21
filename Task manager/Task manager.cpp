@@ -31,27 +31,29 @@ void pushBack(Type*& arr, int& size, Type value) {
 }
 
 void cout1(TaskData task, int i, HANDLE color, int thremeColor) {
+
     int tmp = task.index[i];
     int tmp2 = task.priority[i];
     string deadline = to_string(task.deadline[0][i]) + "/" + to_string(task.deadline[1][i]) + "/" + to_string(task.deadline[2][i]);
     string create = to_string(task.createDate[0][i]) + "/" + to_string(task.createDate[1][i]) + "/" + to_string(task.createDate[2][i]);
 
     int str1 = 3 + task.name[i].length();
-    while ((task.index[i] /= 10) > 0) str1++;
+    while ((tmp /= 10) > 0) str1++;
     int str2 = task.description[i].length() + 2;
     int str3 = 4 + deadline.length();
-    while ((task.priority[i] /= 10) > 0) str3++;
+    while ((tmp2 /= 10) > 0) str3++;
     int str4 = create.length() + 2;
     int max = max(str2, max(str3, max(str4, str1)));
+
     cout << "+";
     for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
     if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
     else { txtColor(color, 15, thremeColor, "+"); }
-    cout << endl << "| " << tmp << " " << task.name[i];
+    cout << endl << "| " << task.index[i] << " " << task.name[i];
     for (int i = 0; i < max - str1; i++) { cout << " "; }
     cout << "|" << endl << "| " << task.description[i];
     for (int i = 0; i < max - str2; i++) { cout << " "; }
-    cout << " |" << endl << "| " << tmp2 << " " << deadline;
+    cout << " |" << endl << "| " << task.priority[i] << " " << deadline;
     for (int i = 0; i < max - str3; i++) { cout << " "; }
     cout << " |" << endl << "| " << create;
     for (int i = 0; i < max - str4; i++) { cout << " "; }
@@ -178,25 +180,30 @@ bool createTask(TaskData& task, string newName, string newData, int newPriority,
     pushBack(task.description, task.size, newData);
     pushBack(task.priority, task.size, newPriority);
     pushBack2D(task.deadline, task.ROWS, task.size, d, m, y);
-    pushBack2D(task.createDate, task.ROWS, task.size, 1, 04, 1996);
+    pushBack2D(task.createDate, task.ROWS, task.size, 21, 11, 1996);
     pushBack(task.index, task.size, task.size);
-    pushBack(task.createDateSize, task.size, dateSort(1, 04, 1996));
+    pushBack(task.createDateSize, task.size, dateSort(21, 11, 1996));
     pushBack(task.deadlineSize, task.size, dateSort(d, m, y));
     return true;
 }
 
-bool coutTask(TaskData task, HANDLE color, int thremeColor) {
-    string tmp;
-    cout << "[A] Назва \n[B] Дедлайн \n[C] Дата створення \n[D] День \n[E] Неділя \n[F] Місяць" << endl;
-    cin.ignore();
-    getline(cin, tmp);
-    if (tmp.find("A") != -1) { sort(task, task.name); }
-    else if (tmp.find("C") != -1) { sort(task, task.createDateSize); }
-    else if (tmp.find("B") != -1) { sort(task, task.deadlineSize); }
-    int d = task.createDate[0][0], m = task.createDate[1][0], y = task.createDate[2][0], d1, m1, y1;  // Переписать
+bool coutTask(TaskData task, HANDLE color, int thremeColor, string select) {
+    if (select.find("N") != -1) { 
+        if (select.find(">") != -1) {sort(task, task.name, 1);}
+        else { sort(task, task.name, 0);  }
+    }
+    else if (select.find("C") != -1) { 
+        if (select.find(">") != -1) { sort(task, task.name, 1); }
+        else { sort(task, task.createDateSize, 0); }
+    }
+    else if (select.find("E") != -1) { 
+        if (select.find(">") != -1) { sort(task, task.deadlineSize, 0); }
+        else { sort(task, task.name, 1); }
+    }
+    int d = task.createDate[0][0], m = task.createDate[1][0], y = task.createDate[2][0], d1, m1, y1;
     int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if (y % 4 == 0) { daysMax[1] = 29; }
-    if (tmp.find("D") != -1) {
+    if (select.find("D") != -1) {
         for (int i = 0; i < task.size; i++) {
             if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
                 cout1(task, i, color, thremeColor);
@@ -204,13 +211,13 @@ bool coutTask(TaskData task, HANDLE color, int thremeColor) {
             }
         }
     }
-    else if (tmp.find("E") != -1) {
+    else if (select.find("W") != -1) {
         if (d + 7 > daysMax[m - 1]) {
             d1 = d + 7 - daysMax[m - 1], y1 = y;
             if (m == 11) { m1 = 0, y1 = y + 1; }
             else { m1 = m + 1; }
             for (int i = 0; i < task.size; i++) {
-                if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m1 && task.deadline[2][i] == y1) {
+                if (task.deadline[0][i] >= d && task.deadline[0][i] < d1 && task.deadline[1][i] == m1 && task.deadline[2][i] == y1) {
                     cout1(task, i, color, thremeColor);
                     cout << endl;
 
@@ -228,7 +235,7 @@ bool coutTask(TaskData task, HANDLE color, int thremeColor) {
             }
         }
     }
-    else if (tmp.find("F") != -1) {
+    else if (select.find("M") != -1) {
         y1 = y;
         if (m == 11) { m1 = 0, y1 = y + 1; }
         else { m1 = m + 1; }
@@ -241,6 +248,7 @@ bool coutTask(TaskData task, HANDLE color, int thremeColor) {
     }
     else {
         for (int i = 0; i < task.size; i++) {
+
             cout1(task, i, color, thremeColor);
             cout << endl;
         }
@@ -270,13 +278,13 @@ bool deleteTask(TaskData& task, int number) {
 bool editTask(TaskData& task, int number, string editName, string editDescription, int editPriority, string editNewDate) {
     for (int i = 0; i < task.size; i++) {
         if (task.index[i] == number) {
-            if (editName != "") { task.name[i] = editName; }
-            if (editDescription != "") { task.description[i] = editDescription; }
-            if (editPriority != 0) {
+            if (editName != "-") { task.name[i] = editName; }
+            if (editDescription != "-") { task.description[i] = editDescription; }
+            if (editPriority != -1) {
                 if (editPriority < 1 || editPriority > 5) { return false; }
                 task.priority[i] = editPriority;
-            }
-            if (editNewDate != "") {
+            } 
+            if (editNewDate != "-") {
                 int d1, m1, y1;
                 if (validateDate(editNewDate, d1, m1, y1) == false) { return false; }
                 task.deadline[0][i] = d1;
@@ -285,6 +293,7 @@ bool editTask(TaskData& task, int number, string editName, string editDescriptio
             }
             return true;
         }
+
     }
     return false;
 }
@@ -370,21 +379,22 @@ int main()
     }
 
     while (1) {
+        SetConsoleCP(1251);
+        SetConsoleOutputCP(1251);
         system("cls");
-        int newPriority, w, h, tmp;
+        int w, h, tmp;
         CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
         if (GetConsoleScreenBufferInfo(color, &consoleInfo)) {
             w = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
             h = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
         }
+        cout << endl;
         for (int i = 0; i < w / 2 - 16; i++) { cout << " "; }
-        cout << " ==== MENU ==== " << endl << endl;
-        cout << " 1. New task" << endl << " 2. Delete task" << endl << " 3. Edit task" << endl << " 4. Cout task test" << endl << " 5. Find task" << endl << " 6. Cout task" << endl;
-        cout << "Enter num: ";
+        cout << " ==== MENU ==== \n\n";
+        cout << " 1. New task \n 2. Edit task \n 3. Delete task \n 4. Cout task \n 5. Find task \n 6. Exit \n > Enter num: ";
         cin >> tmp;
-        string newName, newData, newDate, find, select;
-        switch (tmp)
-        {
+        string newName, newData, newDate, find, select, newPriority;
+        switch (tmp){
         case 1:
             system("cls");
             do {
@@ -401,14 +411,15 @@ int main()
                 cin.ignore();
                 cout << " Enter deadline: ";
                 getline(cin, newDate);
-            } while (createTask(task, newName, newData, newPriority, newDate) == false);
-            cout << " Successfully!" << endl;
+            } while (createTask(task, newName, newData, stoi(newPriority), newDate) == false);
+            cout << " Successfully!\n";
             system("pause");
             break;
-        case 2:
+        case 3:
             system("cls");
+            cout << endl;
             for (int i = 0; i < w / 2 - 23; i++) { cout << " "; }
-            cout << " ==== Delete task ==== " << endl << endl;
+            cout << " ==== Delete task ==== \n\n";
             while (1) {
                 cout << " Enter number task: ";
                 cin >> tmp;
@@ -420,81 +431,80 @@ int main()
             cout << " Successfully!" << endl;
             system("pause");
             break;
-        case 3:
+        case 2:
             system("cls");
             for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
-            cout << " ==== Edit task ==== " << endl << endl;
-            cout << " 2. Name \n 3. Description \n 4. Priority \n 5. Deadline \n 6.All \n Select an option: ";
+            cout << endl;
+            cout << " ==== Edit task ==== \n\n";
+            cout << " 2. Name \n 3. Description \n 4. Priority \n 5. Deadline \n 6. All \n > Select an option: ";
             cin >> tmp;
-            if (tmp == 2) {
-                cout << " Enter number task: ";
-                cin >> tmp;
-                cout << " Enter name: ";
-                cin >> newName;
-                if (editTask(task, tmp, newName, "", 0, "") == false) { cout << "You have entered incorrect data :(" << endl; }
+            {
+                string editName, editDescription, editDeadline;
+                int editPriority;
+                if (tmp == 2) {
+                    cout << " Enter number task: ";
+                    cin >> tmp;
+                    cout << " Enter name: ";
+                    cin.ignore();
+                    getline(cin, editName);
+                    if (editTask(task, tmp, editName, "-", -1, "-") == false) { cout << " You have entered incorrect data :(\n"; }
+                }
+                else if (tmp == 3) {
+                    cout << " Enter number task: ";
+                    cin >> tmp;
+                    cout << " Enter description: ";
+                    cin.ignore();
+                    getline(cin, editDescription);
+                    if (editTask(task, tmp, "-", editDescription, -1, "-") == false) { cout << " You have entered incorrect data :(\n"; }
+                }
+                else if (tmp == 4) {
+                    cout << " Enter number task: ";
+                    cin >> tmp;
+                    cout << " Enter priority: ";
+                    cin >> editPriority;
+                    if (editTask(task, tmp, "-", "-", editPriority, "-") == false) { cout << " You have entered incorrect data :(\n"; }
+                }
+                else if (tmp == 5) {
+                    cout << " Enter number task: ";
+                    cin >> tmp;
+                    cout << " Enter deadline: ";
+                    cin.ignore();
+                    getline(cin, editDeadline);
+                    if (editTask(task, tmp, "-", "-", -1, editDeadline) == false) { cout << " You have entered incorrect data :(\n"; }
+                }
+                else if (tmp == 6) {
+                    cout << " Enter number task: ";
+                    cin >> tmp;
+                    cout << " Enter name: ";
+                    cin.ignore();
+                    getline(cin, newName);
+                    cout << " Enter description: ";
+                    getline(cin, newData);
+                    cout << " Enter priority: ";
+                    cin >> editPriority;
+                    cin.ignore();
+                    cout << " Enter deadline: ";
+                    getline(cin, editDeadline);
+                    if (editTask(task, tmp, newName, newData, editPriority, editDeadline) == false) { cout << " You have entered incorrect data :(\n"; }
+                }
             }
-            else if (tmp == 3) {
-                cout << " Enter number task: ";
-                cin >> tmp;
-                cout << " Enter description: ";
-                cin >> newData;
-                if (editTask(task, tmp, "", newData, 0, "") == false) { cout << "You have entered incorrect data :(" << endl; }
-            }
-            else if (tmp == 4) {
-                cout << " Enter number task: ";
-                cin >> tmp;
-                cout << " Enter priority: ";
-                cin >> newPriority;
-                if (editTask(task, tmp, "", "", newPriority, "") == false) { cout << "You have entered incorrect data :(" << endl; }
-            }
-            else if (tmp == 5) {
-                cout << " Enter number task: ";
-                cin >> tmp;
-                cout << " Enter deadline: ";
-                cin >> newDate;
-                if (editTask(task, tmp, "", "", 0, newDate) == false) { cout << "You have entered incorrect data :(" << endl; }
-            }
-            else if (tmp == 6) {
-                cout << " Enter number task: ";
-                cin >> tmp;
-                cout << " Enter name: ";
-                cin >> newName;
-                cout << " Enter description: ";
-                cin >> newData;
-                cout << " Enter priority: ";
-                cin >> newPriority;
-                cout << " Enter deadline: ";
-                cin >> newDate;
-                if (editTask(task, tmp, newName, newData, newPriority, newDate) == false) { cout << "You have entered incorrect data :(" << endl; }
-            }
-            else {
-                cout << "You have entered incorrect data :(" << endl;
-            }
-            cout << " Successfully!" << endl;
             system("pause");
+            
             break;
         case 4:
             system("cls");
-            cout << " === Cout task TEST === " << endl << endl;
-            coutTask(task, color, thremeColor);
+            for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
+            cout << endl;
+            cout << " ==== Cout task ==== \n\n";
+            cout << " [N] Name  [E] Deadline  [C] Date create  [D] Day  [W] Week  [M] Month  [<]A..Z  [>]Z..A\n > Select an option: ";
+            cin.ignore();
+            getline(cin, select);
+            coutTask(task, color, thremeColor, select); 
+            cout << " Successfully!" << endl;
             system("pause");
             break;
-            /*
-            case 5:
-                system("cls");
-                cout << " === Find task === " << endl << endl;
-                cout << "Enter: ";
-                cin >> find;
-                findTask(task, find);
-                pause();
-                break;
-            case 6:
-                system("cls");
-                cout << " === Cout task === " << endl << endl;
-                coutTaskUpd(task, 2);
-                pause();
-                break;
-            */
+        case 6:
+            txtColor(color,  4, 240, " Exit ");
         default:
             // Delete
             return 0;
