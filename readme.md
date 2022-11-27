@@ -1,13 +1,15 @@
 # Task Manager 2.0
 
-Cpp file: Task manager/Task manager.cpp
+Cpp file: [`Task manager.cpp`](/blob/c35ea771ee9a6f1bae2bd57a44e04ccb5ffe4451/Task%20manager/Task%20manager.cpp)
+Text file with tasks: [`dataTask.txt`](/dataTask.txt)
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2c59b5ce-ef37-4138-946c-96f4e2eb5ece/Untitled.png)
+![Image](/Image.png)
 
-## Fuction:
+## Function:
 
 1. Creating tasks
 2. Editing tasks
 3. Deleting tasks
 4. Displaying tasks
-5. Task search
+5. File save
+6. Color cmd
