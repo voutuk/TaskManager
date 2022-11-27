@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <Windows.h>
-//#include <fstream>
+#include <fstream>
+
 using namespace std;
 struct Date {
     int d;
@@ -22,8 +23,8 @@ struct TaskData {
 };
 
 
-void txtColor(HANDLE color, int fg, int bg, string txt) {
-    SetConsoleTextAttribute(color, fg | bg);
+void txtColor(HANDLE color, int fg, string txt) {
+    SetConsoleTextAttribute(color, fg | 240);
     cout << txt;
 }
 
@@ -72,7 +73,7 @@ bool validateDate(string date, int& d, int& m, int& y) {
     return true;
 }
 
-void coutTask(TaskData task, int i, HANDLE color, int thremeColor) {
+void coutTask(TaskData task, int i, HANDLE color) {
 
     int tmp = task.tasks[i].index;
     int tmp2 = task.tasks[i].priority;
@@ -88,9 +89,8 @@ void coutTask(TaskData task, int i, HANDLE color, int thremeColor) {
     int max = max(str2, max(str3, max(str4, str1)));
 
     cout << "+";
-    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
-    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
-    else { txtColor(color, 15, thremeColor, "+"); }
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, "-"); }
+    txtColor(color, 0, "+");
     cout << endl << "| " << task.tasks[i].index << " " << task.tasks[i].name;
     for (int i = 0; i < max - str1; i++) { cout << " "; }
     cout << "|" << endl << "| " << task.tasks[i].description;
@@ -100,9 +100,8 @@ void coutTask(TaskData task, int i, HANDLE color, int thremeColor) {
     cout << " |" << endl << "| " << create;
     for (int i = 0; i < max - str4; i++) { cout << " "; }
     cout << " |" << endl << "+";
-    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
-    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
-    else { txtColor(color, 15, thremeColor, "+"); }
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, "-"); }
+    txtColor(color, 0, "+");
 }
 
 void delTask(TaskData& task, int index) {
@@ -116,7 +115,7 @@ void delTask(TaskData& task, int index) {
     task.tasks = tmpStruct;
 }
 
-bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
+bool sortTask(TaskData task, HANDLE color, string select) {
     if (select.find("N") != -1 || select.find("n") != -1) {
         for (int step = 0; step < task.size - 1; ++step) {
             for (int i = 0; i < task.size - 1; i++) {
@@ -165,7 +164,7 @@ bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
     if (select.find("D") != -1 || select.find("d") != -1) {
         for (int i = 0; i < task.size; i++) {
             if (task.tasks[i].deadline.d == d && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) {
-                coutTask(task, i, color, thremeColor);
+                coutTask(task, i, color);
                 cout << endl;
             }
         }
@@ -176,7 +175,7 @@ bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
             else { m1 = m + 1; }
             for (int i = 0; i < task.size; i++) {
                 if (task.tasks[i].deadline.d >= d && task.tasks[i].deadline.d < d1 && task.tasks[i].deadline.m == m1 && task.tasks[i].deadline.y == y1) {
-                    coutTask(task, i, color, thremeColor);
+                    coutTask(task, i, color);
                     cout << endl;
 
                 }
@@ -185,7 +184,7 @@ bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
             d1 = d + 7;
             for (int i = 0; i < task.size; i++) {
                 if (task.tasks[i].deadline.d > d && task.tasks[i].deadline.d < d1 && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) {
-                    coutTask(task, i, color, thremeColor);
+                    coutTask(task, i, color);
                     cout << endl;
 
                 }
@@ -197,13 +196,13 @@ bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
         else { m1 = m + 1; }
         for (int i = 0; i < task.size; i++) {
             if (task.tasks[i].deadline.m > m && task.tasks[i].deadline.m < m1 && task.tasks[i].deadline.y == y1) {
-                coutTask(task, i, color, thremeColor);
+                coutTask(task, i, color);
                 cout << endl;
             }
         }
     } else {
         for (int i = 0; i < task.size; i++) {
-            coutTask(task, i, color, thremeColor);
+            coutTask(task, i, color);
             cout << endl;
         }
     }
@@ -211,136 +210,85 @@ bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
     return true;
 }
 
-bool findTask(TaskData& task, HANDLE color, string search, int thremeColor) {
+bool findTask(TaskData& task, HANDLE color, string search) {
     int d, m, y;
     bool a = validateDate(search, d, m, y);
     for (int i = 0; i < task.size; i++) {
-        if (task.tasks[i].name.find(search) != -1) { coutTask(task, i, color, thremeColor); }
-        if (task.tasks[i].description.find(search) != -1) { coutTask(task, i, color, thremeColor); }
-        //if (task.priority[i] == stoi(search)) { cout1(task, i, color, thremeColor); }
+        if (task.tasks[i].name.find(search) != -1) { coutTask(task, i, color); }
+        if (task.tasks[i].description.find(search) != -1) { coutTask(task, i, color); }
+        //if (task.priority[i] == stoi(search)) { cout1(task, i, color); }
         if (a == true) {
-            if (task.tasks[i].deadline.d == d && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) { coutTask(task, i, color, thremeColor); }
+            if (task.tasks[i].deadline.d == d && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) { coutTask(task, i, color); }
         }
     }
     cout << endl;
     return true;
 }
 
-//bool saveFile(ofstream& fouts, TaskData task) {
-//    if (fouts.is_open()) {
-//        fouts << task.size << endl;
-//        for (int i = 0; i < task.size; i++) {
-//            fouts << task.priority[i] << endl;
-//            fouts << task.index[i] << endl;
-//            fouts << task.createDateSize[i] << endl;
-//            fouts << task.deadlineSize[i] << endl;
-//            fouts << task.name[i] << endl;
-//            fouts << task.description[i] << endl;
-//
-//            /*fouts << task.deadline[i] << endl;
-//            fouts << task.createDate[i] << endl;
-//            for (int j = 0; j < task.ROWS; j++) {
-//                fouts << task.deadline[i][j] << endl;
-//            }
-//            for (int g = 0; g < task.ROWS; g++) {
-//                fouts << task.createDate[i][g] << endl;
-//            }*/
-//        }
-//        return true;
-//    }
-//    else { return false; }
-//}
-
-//bool openFile(ifstream& fin, TaskData task) {
-//    if (fin.is_open()) {
-//        string tmp;
-//        getline(fin, tmp);
-//        int tmps = stoi(tmp), tmp1, tmp2, tmp3;
-//        for (int i = 0; i < tmps; i++) {
-//            getline(fin, tmp);
-//            pushBack(task.priority, task.size, stoi(tmp));
-//            getline(fin, tmp);
-//            pushBack(task.index, task.size, stoi(tmp));
-//            getline(fin, tmp);
-//            pushBack(task.createDateSize, task.size, stoi(tmp));
-//            getline(fin, tmp);
-//            pushBack(task.deadlineSize, task.size, stoi(tmp));
-//            getline(fin, tmp);
-//            pushBack(task.name, task.size, tmp);
-//            getline(fin, tmp);
-//            pushBack(task.description, task.size, tmp);
-//            ++task.size;
-//            //getline(fin, tmp);
-//            //pushBack(task.deadline, task.size, tmp);
-//            //getline(fin, tmp);
-//            //pushBack(task.createDate, task.size, tmp);
-//            //
-//            //tmp1 = getline(fin, tmp), tmp2 = getline(fin, tmp), tmp3 = getline(fin, tmp);
-//            //pushBack2D(task.deadline, task.ROWS, task.size, stoi(tmp1), stoi(tmp2), stoi(tmp3));
-//            //tmp1 = getline(fin, tmp), tmp2 = getline(fin, tmp), tmp3 = getline(fin, tmp);
-//            //pushBack2D(task.createDate, task.ROWS, task.size, stoi(tmp1), stoi(tmp2), stoi(tmp3));
-//        }
-//        return true;
-//    }
-//    else {
-//        cout << "FLAG 1";
-//    }
-//}
-
-int startProgram(TaskData& task) {
-    int thremeColor = 2;
-    string tmp;
-
-    while (tmp != "y" && tmp != "Y") {
-        system("cls");
-        cout << "1. White \n2. Black \n3. Red \n4. Blue \n5. Yellow \n6. File\nEnter \"y\" to continue \n Select threme: ";
-        getline(cin, tmp);
-        if (tmp == "1") {
-            system("color F0");
-            thremeColor = 240;
+bool saveFile(ofstream& fouts, TaskData task) {
+    if (fouts.is_open()) {
+        fouts << task.size << endl;
+        for (int i = 0; i < task.size; i++){
+            fouts << task.tasks[i].priority << endl;
+            fouts << task.tasks[i].name << endl;
+            fouts << task.tasks[i].index << endl;
+            fouts << task.tasks[i].description << endl;
+            fouts << task.tasks[i].deadline.d << endl;
+            fouts << task.tasks[i].deadline.m << endl;
+            fouts << task.tasks[i].deadline.y << endl;
+            fouts << task.tasks[i].deadline.size << endl;
         }
-        else if (tmp == "2") {
-            system("color 0F");
-            thremeColor = 0;
-        }
-        else if (tmp == "3") {
-            system("color CF");
-            thremeColor = 192;
-        }
-        else if (tmp == "4") {
-            system("color 9F");
-            thremeColor = 144;
-        }
-        else if (tmp == "5") {
-            system("color E0");
-            thremeColor = 224;
-        }
-        else if (tmp == "6") {
-            /*system("cls");
-            string tmp;
-            cout << "Drag the file into the window: ";
-            getline(cin, tmp);
-            ifstream hh;
-            hh.open(tmp);
-            openFile(hh, task);
-            hh.close();*/
-        }
-    }
-    system("cls");
-    return thremeColor;
+        return true;
+    } else { return false; }
 }
 
+void openFile(TaskData& task) {
+    cout << "Drag the file into the window: ";
+    cout << "Drag the file into the window: ";
+    getline(cin, date);
+    ifstream file;
+    file.open(date);
+    openFile(file, task);
+
+    string tmpSize, tmptmp;
+    Task tmp;
+    if (fin.is_open()) {
+        getline(fin, tmpSize);
+        for (int i = 0; i < stoi(tmpSize); i++) {
+            getline(fin, tmptmp);
+            tmp.priority = stoi(tmptmp);
+            getline(fin, tmptmp);
+            tmp.name = tmptmp;
+            getline(fin, tmptmp);
+            tmp.index = stoi(tmptmp);
+            getline(fin, tmptmp);
+            tmp.description = tmptmp;
+            getline(fin, tmptmp);
+            tmp.deadline.d = stoi(tmptmp);
+            getline(fin, tmptmp);
+            tmp.deadline.m = stoi(tmptmp);
+            getline(fin, tmptmp);
+            tmp.deadline.y = stoi(tmptmp);
+            getline(fin, tmptmp);
+            tmp.deadline.size = stoi(tmptmp);
+            pushBack(&task, tmp);
+        }
+    }
+    file.close();
+}
+
+
 int main() {
+    system("color F0");
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
     TaskData task;
     Task newValue;
     string date;
     int tmp, tmp2;
-    int thremeColor = startProgram(task);
 
     while (1) {
-        //SetConsoleCP(1251);
-        //SetConsoleOutputCP(1251);
+        SetConsoleCP(1251);
+        SetConsoleOutputCP(1251);
         system("cls");
         cout << endl;
         cout << " ==== MENU ==== \n\n";
@@ -370,7 +318,7 @@ int main() {
             cout << " Successfully!\n";
             system("pause");
             break;
-        /*case 2:
+        case 10: // Debug
             system("cls");
             for (int i = 0; i < task.size; i++){
                 cout << "Task index: " << task.tasks[i].index << endl;
@@ -381,7 +329,7 @@ int main() {
             }
             cout << " Successfully!\n";
             system("pause");
-            break;*/
+            break;
         case 3:
             system("cls");
             cout << "\n ==== Delete task ==== \n\n";
@@ -475,7 +423,7 @@ int main() {
             cout << " [N] Name  [E] Deadline [P] Priority [U] Number  [D] Day  [W] Week  [M] Month  [>]Z..A\n > Select an option: ";
             cin.ignore();
             getline(cin, date);
-            sortTask(task, color, thremeColor, date);
+            sortTask(task, color, date);
             cout << " Successfully!" << endl;
             system("pause");
             break;
@@ -485,30 +433,18 @@ int main() {
             cout << " > Enter a search query: ";
             cin.ignore();
             getline(cin, date);
-            findTask(task, color, date, thremeColor);
+            findTask(task, color, date);
             cout << " Successfully!" << endl;
             system("pause");
             break;
-        //case 6:
-        //    txtColor(color, 4, 240, " Exit ");
-        //    /*ofstream fout;
-        //    fout.open("dataTask.txt");
-        //    saveFile(fout, task);
-        //    fout.close();*/
-
-        //    delete[] task.priority;
-        //    delete[] task.index;
-        //    delete[] task.createDateSize;
-        //    delete[] task.deadlineSize;
-        //    for (int i = 0; i < task.ROWS; i++) {
-        //        delete[] task.createDate[i];
-        //        delete[] task.deadline[i];
-        //    }
-        //    delete[] task.createDate;
-        //    delete[] task.deadline;
-        //    delete[] task.name;
-        //    delete[] task.description;
-        //    return 0;
+        case 6:
+            txtColor(color, 4, " Exit ");
+            ofstream fout;
+            fout.open("dataTask.txt");
+            saveFile(fout, task);
+            fout.close();
+            delete[] task.tasks;
+            return 0;
         }
     }
 
