@@ -225,7 +225,7 @@ bool findTask(TaskData& task, HANDLE color, string search) {
     return true;
 }
 
-bool saveFile(ofstream& fouts, TaskData task) {
+void saveFile(ofstream& fouts, TaskData task, HANDLE color) {
     if (fouts.is_open()) {
         fouts << task.size << endl;
         for (int i = 0; i < task.size; i++){
@@ -238,45 +238,55 @@ bool saveFile(ofstream& fouts, TaskData task) {
             fouts << task.tasks[i].deadline.y << endl;
             fouts << task.tasks[i].deadline.size << endl;
         }
-        return true;
-    } else { return false; }
+    } else { 
+        txtColor(color, 4, " Data not save! ");
+        delete[] task.tasks;
+        exit(1);
+    }
 }
 
-void openFile(TaskData& task) {
-    cout << "Drag the file into the window: ";
-    cout << "Drag the file into the window: ";
-    getline(cin, date);
-    ifstream file;
-    file.open(date);
-    openFile(file, task);
-
-    string tmpSize, tmptmp;
+string openFile(TaskData& task, HANDLE color) {
+    string file = "dataTask.txt", tmpSize, tmptmp;
     Task tmp;
-    if (fin.is_open()) {
-        getline(fin, tmpSize);
-        for (int i = 0; i < stoi(tmpSize); i++) {
-            getline(fin, tmptmp);
-            tmp.priority = stoi(tmptmp);
-            getline(fin, tmptmp);
-            tmp.name = tmptmp;
-            getline(fin, tmptmp);
-            tmp.index = stoi(tmptmp);
-            getline(fin, tmptmp);
-            tmp.description = tmptmp;
-            getline(fin, tmptmp);
-            tmp.deadline.d = stoi(tmptmp);
-            getline(fin, tmptmp);
-            tmp.deadline.m = stoi(tmptmp);
-            getline(fin, tmptmp);
-            tmp.deadline.y = stoi(tmptmp);
-            getline(fin, tmptmp);
-            tmp.deadline.size = stoi(tmptmp);
-            pushBack(&task, tmp);
+    ifstream fin;
+    fin.open(file);
+    if (fin.is_open() == false) {
+        cout << "No data file found, enter \"y\" if you want to create a new file. \nDrag the file into the window: ";
+        getline(cin, file);
+        if (file == "y") {
+            file = "dataTask.txt";
+            return file;
+        }
+        fin.open(file);
+        if (fin.is_open() == false) { 
+            txtColor(color, 4, " Unsuccessfully ");
+            delete[] task.tasks;
+            exit(1);
         }
     }
-    file.close();
+    getline(fin, tmpSize);
+    for (int i = 0; i < stoi(tmpSize); i++) {
+        getline(fin, tmptmp);
+        tmp.priority = stoi(tmptmp);
+        getline(fin, tmptmp);
+        tmp.name = tmptmp;
+        getline(fin, tmptmp);
+        tmp.index = stoi(tmptmp);
+        getline(fin, tmptmp);
+        tmp.description = tmptmp;
+        getline(fin, tmptmp);
+        tmp.deadline.d = stoi(tmptmp);
+        getline(fin, tmptmp);
+        tmp.deadline.m = stoi(tmptmp);
+        getline(fin, tmptmp);
+        tmp.deadline.y = stoi(tmptmp);
+        getline(fin, tmptmp);
+        tmp.deadline.size = stoi(tmptmp);
+        pushBack(&task, tmp);
+    }
+    fin.close();
+    return file;
 }
-
 
 int main() {
     system("color F0");
@@ -285,7 +295,7 @@ int main() {
     Task newValue;
     string date;
     int tmp, tmp2;
-
+    string file = openFile(task, color);
     while (1) {
         SetConsoleCP(1251);
         SetConsoleOutputCP(1251);
@@ -438,12 +448,13 @@ int main() {
             system("pause");
             break;
         case 6:
-            txtColor(color, 4, " Exit ");
+            txtColor(color, 1, " Exit ");
             ofstream fout;
-            fout.open("dataTask.txt");
-            saveFile(fout, task);
+            fout.open(file);
+            saveFile(fout, task, color);
             fout.close();
             delete[] task.tasks;
+            txtColor(color, 2, " Successfully ");
             return 0;
         }
     }
