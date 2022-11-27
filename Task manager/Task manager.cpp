@@ -122,7 +122,6 @@ bool validateDate(string date, int& d, int& m, int& y) {
 //}
 
 void delTask(TaskData& task, int index) {
-    cout << "Index: " << index;
     --task.size;
     Task* tmpStruct = new Task[task.size];
     for (int i = 0; i < task.size; i++) {
@@ -272,28 +271,8 @@ void delTask(TaskData& task, int index) {
 //    return false;
 //}
 //
-//bool editTask(TaskData& task, int number, string editName, string editDescription, int editPriority, string editNewDate) {
-//    for (int i = 0; i < task.size; i++) {
-//        if (task.index[i] == number) {
-//            if (editName != "-") { task.name[i] = editName; }
-//            if (editDescription != "-") { task.description[i] = editDescription; }
-//            if (editPriority != -1) {
-//                if (editPriority < 1 || editPriority > 5) { return false; }
-//                task.priority[i] = editPriority;
-//            }
-//            if (editNewDate != "-") {
-//                int d1, m1, y1;
-//                if (validateDate(editNewDate, d1, m1, y1) == false) { return false; }
-//                task.deadline[0][i] = d1;
-//                task.deadline[1][i] = m1;
-//                task.deadline[2][i] = y1;
-//            }
-//            return true;
-//        }
-//
-//    }
-//    return false;
-//}
+
+
 //
 //bool findTask(TaskData& task, HANDLE color, string search, int thremeColor) {
 //    int d, m, y;
@@ -420,7 +399,7 @@ int main() {
     TaskData task;
     Task newValue;
     string date;
-    int tmp;
+    int tmp, tmp2;
     //int thremeColor = startProgram(task);
 
     while (1) {
@@ -456,6 +435,7 @@ int main() {
             system("pause");
             break;
         case 2:
+            system("cls");
             for (int i = 0; i < task.size; i++){
                 cout << "Task index: " << task.tasks[i].index << endl;
                 cout << "Name: " << task.tasks[i].name << endl;
@@ -486,65 +466,71 @@ int main() {
             cout << " Successfully!" << endl;
             system("pause");
             break;
-        //case 2:
-        //    system("cls");
-        //    for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
-        //    cout << endl;
-        //    cout << " ==== Edit task ==== \n\n";
-        //    cout << " 2. Name \n 3. Description \n 4. Priority \n 5. Deadline \n 6. All \n > Select an option: ";
-        //    cin >> tmp;
-        //    {
-        //        string editName, editDescription, editDeadline;
-        //        int editPriority;
-        //        if (tmp == 2) {
-        //            cout << " Enter number task: ";
-        //            cin >> tmp;
-        //            cout << " Enter name: ";
-        //            cin.ignore();
-        //            getline(cin, editName);
-        //            if (editTask(task, tmp, editName, "-", -1, "-") == false) { cout << " You have entered incorrect data :(\n"; }
-        //        }
-        //        else if (tmp == 3) {
-        //            cout << " Enter number task: ";
-        //            cin >> tmp;
-        //            cout << " Enter description: ";
-        //            cin.ignore();
-        //            getline(cin, editDescription);
-        //            if (editTask(task, tmp, "-", editDescription, -1, "-") == false) { cout << " You have entered incorrect data :(\n"; }
-        //        }
-        //        else if (tmp == 4) {
-        //            cout << " Enter number task: ";
-        //            cin >> tmp;
-        //            cout << " Enter priority: ";
-        //            cin >> editPriority;
-        //            if (editTask(task, tmp, "-", "-", editPriority, "-") == false) { cout << " You have entered incorrect data :(\n"; }
-        //        }
-        //        else if (tmp == 5) {
-        //            cout << " Enter number task: ";
-        //            cin >> tmp;
-        //            cout << " Enter deadline: ";
-        //            cin.ignore();
-        //            getline(cin, editDeadline);
-        //            if (editTask(task, tmp, "-", "-", -1, editDeadline) == false) { cout << " You have entered incorrect data :(\n"; }
-        //        }
-        //        else if (tmp == 6) {
-        //            cout << " Enter number task: ";
-        //            cin >> tmp;
-        //            cout << " Enter name: ";
-        //            cin.ignore();
-        //            getline(cin, newName);
-        //            cout << " Enter description: ";
-        //            getline(cin, newData);
-        //            cout << " Enter priority: ";
-        //            cin >> editPriority;
-        //            cin.ignore();
-        //            cout << " Enter deadline: ";
-        //            getline(cin, editDeadline);
-        //            if (editTask(task, tmp, newName, newData, editPriority, editDeadline) == false) { cout << " You have entered incorrect data :(\n"; }
-        //        }
-        //    }
-        //    system("pause");
-        //    break;
+        case 4:
+            system("cls");
+            cout << "\n ==== Edit task ==== \n\n";
+            cout << " 1. Name \n 2. Description \n 3. Priority \n 4. Deadline \n 5. All \n 6.Exit\n > Select an option: ";
+            cin >> tmp;
+            if (tmp == 0) { break; }
+            cout << " Enter number task: ";
+            cin >> tmp2;
+            for (int i = 0; i < task.size; i++) {
+                if (task.tasks[i].index == tmp2) {
+                    if (tmp == 1) {
+                        cin.ignore();
+                        cout << " Enter name: ";
+                        getline(cin, newValue.name);
+                        task.tasks[i].name = newValue.name;
+                        break;
+                    }
+                    else if (tmp == 2) {
+                        cin.ignore();
+                        cout << " Enter description: ";
+                        getline(cin, newValue.description);
+                        task.tasks[i].description = newValue.description;
+                        break;
+                    }
+                    else if (tmp == 3) {
+                        do {
+                            cout << " Enter priority: ";
+                            cin >> newValue.priority;
+                        } while (newValue.priority < 1 || newValue.priority > 5);
+                        task.tasks[i].priority = newValue.priority;
+                        break;
+                    }
+                    else if (tmp == 4) {
+                        cin.ignore();
+                        do {
+                            cout << " Enter deadline: ";
+                            getline(cin, newValue.name);
+                        } while (validateDate(newValue.name, d, m, y) == false);
+                        newValue.deadline.d = d, newValue.deadline.m = m, newValue.deadline.y = y, newValue.deadline.size = dateSize(d, m, y);
+                        task.tasks[i].deadline = newValue.deadline;
+                        break;
+                    }else if (tmp == 5) {
+                        cin.ignore();
+                        cout << " Enter name: ";
+                        getline(cin, newValue.name);
+                        task.tasks[i].name = newValue.name;
+                        cout << " Enter description: ";
+                        getline(cin, newValue.description);
+                        task.tasks[i].description = newValue.description;
+                        cin.ignore();
+                        do {
+                            cout << " Enter priority: ";
+                            cin >> newValue.priority;
+                        } while (newValue.priority < 1 || newValue.priority > 5);
+                        task.tasks[i].priority = newValue.priority;
+                        do {
+                            cout << " Enter deadline: ";
+                            getline(cin, newValue.name);
+                        } while (validateDate(newValue.name, d, m, y) == false);
+                        newValue.deadline.d = d, newValue.deadline.m = m, newValue.deadline.y = y, newValue.deadline.size = dateSize(d, m, y);
+                        task.tasks[i].deadline = newValue.deadline;
+                    }
+                }
+            }
+            break;
         //case 4:
         //    system("cls");
         //    for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
