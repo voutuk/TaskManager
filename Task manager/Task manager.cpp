@@ -211,22 +211,20 @@ bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
     return true;
 }
 
-//
-//bool findTask(TaskData& task, HANDLE color, string search, int thremeColor) {
-//    int d, m, y;
-//    bool a = validateDate(search, d, m, y);
-//    for (int i = 0; i < task.size; i++) {
-//        if (task.name[i].find(search) != -1) { cout1(task, i, color, thremeColor); }
-//        if (task.description[i].find(search) != -1) { cout1(task, i, color, thremeColor); }
-//        //if (task.priority[i] == stoi(search)) { cout1(task, i, color, thremeColor); }
-//        if (a == true) {
-//            if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) { cout1(task, i, color, thremeColor); }
-//            if (task.createDate[0][i] == d && task.createDate[1][i] == m && task.createDate[2][i] == y) { cout1(task, i, color, thremeColor); }
-//        }
-//    }
-//    cout << endl;
-//    return true;
-//}
+bool findTask(TaskData& task, HANDLE color, string search, int thremeColor) {
+    int d, m, y;
+    bool a = validateDate(search, d, m, y);
+    for (int i = 0; i < task.size; i++) {
+        if (task.tasks[i].name.find(search) != -1) { coutTask(task, i, color, thremeColor); }
+        if (task.tasks[i].description.find(search) != -1) { coutTask(task, i, color, thremeColor); }
+        //if (task.priority[i] == stoi(search)) { cout1(task, i, color, thremeColor); }
+        if (a == true) {
+            if (task.tasks[i].deadline.d == d && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) { coutTask(task, i, color, thremeColor); }
+        }
+    }
+    cout << endl;
+    return true;
+}
 
 //bool saveFile(ofstream& fouts, TaskData task) {
 //    if (fouts.is_open()) {
@@ -481,18 +479,16 @@ int main() {
             cout << " Successfully!" << endl;
             system("pause");
             break;
-        //case 5:
-        //    system("cls");
-        //    for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
-        //    cout << endl;
-        //    cout << " ==== Find task ==== \n\n";
-        //    cout << " > Enter a search query: ";
-        //    cin.ignore();
-        //    getline(cin, select);
-        //    findTask(task, color, select, thremeColor);
-        //    cout << " Successfully!" << endl;
-        //    system("pause");
-        //    break;
+        case 5:
+            system("cls");
+            cout << "\n ==== Find task ==== \n\n";
+            cout << " > Enter a search query: ";
+            cin.ignore();
+            getline(cin, date);
+            findTask(task, color, date, thremeColor);
+            cout << " Successfully!" << endl;
+            system("pause");
+            break;
         //case 6:
         //    txtColor(color, 4, 240, " Exit ");
         //    /*ofstream fout;
