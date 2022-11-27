@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-//#include <Windows.h>
+#include <Windows.h>
 //#include <fstream>
 using namespace std;
 struct Date {
@@ -22,10 +22,10 @@ struct TaskData {
 };
 
 
-//void txtColor(HANDLE color, int fg, int bg, string txt) {
-//    SetConsoleTextAttribute(color, fg | bg);
-//    cout << txt;
-//}
+void txtColor(HANDLE color, int fg, int bg, string txt) {
+    SetConsoleTextAttribute(color, fg | bg);
+    cout << txt;
+}
 
 void pushBack(TaskData* task, Task newValue) {
     ++task->size;
@@ -72,54 +72,38 @@ bool validateDate(string date, int& d, int& m, int& y) {
     return true;
 }
 
-//
-//void cout1(TaskData task, int i, HANDLE color, int thremeColor) {
-//
-//    int tmp = task.tasks[i].index;
-//    int tmp2 = task.tasks[i].priority;
-//    string deadline = to_string(task.deadline[0][i]) + "/" + to_string(task.deadline[1][i]) + "/" + to_string(task.deadline[2][i]);
-//    string create = to_string(task.createDate[0][i]) + "/" + to_string(task.createDate[1][i]) + "/" + to_string(task.createDate[2][i]);
-//
-//    int str1 = 3 + task.name[i].length();
-//    while ((tmp /= 10) > 0) str1++;
-//    int str2 = task.description[i].length() + 2;
-//    int str3 = 4 + deadline.length();
-//    while ((tmp2 /= 10) > 0) str3++;
-//    int str4 = create.length() + 2;
-//    int max = max(str2, max(str3, max(str4, str1)));
-//
-//    cout << "+";
-//    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
-//    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
-//    else { txtColor(color, 15, thremeColor, "+"); }
-//    cout << endl << "| " << task.index[i] << " " << task.name[i];
-//    for (int i = 0; i < max - str1; i++) { cout << " "; }
-//    cout << "|" << endl << "| " << task.description[i];
-//    for (int i = 0; i < max - str2; i++) { cout << " "; }
-//    cout << " |" << endl << "| " << task.priority[i] << " " << deadline;
-//    for (int i = 0; i < max - str3; i++) { cout << " "; }
-//    cout << " |" << endl << "| " << create;
-//    for (int i = 0; i < max - str4; i++) { cout << " "; }
-//    cout << " |" << endl << "+";
-//    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
-//    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
-//    else { txtColor(color, 15, thremeColor, "+"); }
-//}
-//
-//void pushBack2D(int**& arr, int ROWS, int& COLS, int data1, int data2, int data3) {
-//    int** tmp_arr = new int* [ROWS];
-//    for (int i = 0; i < ROWS; i++) {
-//        tmp_arr[i] = new int[COLS];
-//        for (int j = 0; j < COLS - 1; j++) { tmp_arr[i][j] = arr[i][j]; }
-//    }
-//
-//    tmp_arr[0][COLS - 1] = data1;
-//    tmp_arr[1][COLS - 1] = data2;
-//    tmp_arr[2][COLS - 1] = data3;
-//
-//    delete[] arr;
-//    arr = tmp_arr;
-//}
+void coutTask(TaskData task, int i, HANDLE color, int thremeColor) {
+
+    int tmp = task.tasks[i].index;
+    int tmp2 = task.tasks[i].priority;
+    string deadline = to_string(task.tasks[i].deadline.d) + "/" + to_string(task.tasks[i].deadline.m) + "/" + to_string(task.tasks[i].deadline.y);
+    string create = "27/11/2022"; /////////////////////////////// DATE
+
+    int str1 = 3 + task.tasks[i].name.length();
+    while ((tmp /= 10) > 0) str1++;
+    int str2 = task.tasks[i].description.length() + 2;
+    int str3 = 4 + deadline.length();
+    while ((tmp2 /= 10) > 0) str3++;
+    int str4 = create.length() + 2;
+    int max = max(str2, max(str3, max(str4, str1)));
+
+    cout << "+";
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
+    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
+    else { txtColor(color, 15, thremeColor, "+"); }
+    cout << endl << "| " << task.tasks[i].index << " " << task.tasks[i].name;
+    for (int i = 0; i < max - str1; i++) { cout << " "; }
+    cout << "|" << endl << "| " << task.tasks[i].description;
+    for (int i = 0; i < max - str2; i++) { cout << " "; }
+    cout << " |" << endl << "| " << task.tasks[i].priority << " " << deadline;
+    for (int i = 0; i < max - str3; i++) { cout << " "; }
+    cout << " |" << endl << "| " << create;
+    for (int i = 0; i < max - str4; i++) { cout << " "; }
+    cout << " |" << endl << "+";
+    for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, thremeColor, "-"); }
+    if (thremeColor == 240 || thremeColor == 224) { txtColor(color, 0, thremeColor, "+"); }
+    else { txtColor(color, 15, thremeColor, "+"); }
+}
 
 void delTask(TaskData& task, int index) {
     --task.size;
@@ -132,146 +116,100 @@ void delTask(TaskData& task, int index) {
     task.tasks = tmpStruct;
 }
 
-//void del2D(int**& arr, int ROWS, int& COLS, int ind) {
-//    int** tmp_arr = new int* [ROWS];
-//    for (int i = 0; i < ROWS; i++) {
-//        tmp_arr[i] = new int[COLS];
-//        for (int j = 0; j < COLS; j++) {
-//            if (i < ind) { tmp_arr[i][j] = arr[i][j]; }
-//            else if (i >= ind) { tmp_arr[i][j] = arr[i][j + 1]; }
-//        }
-//    }
-//    delete[] arr;
-//    arr = tmp_arr;
-//}
+bool sortTask(TaskData task, HANDLE color, int thremeColor, string select) {
+    if (select.find("N") != -1 || select.find("n") != -1) {
+        for (int step = 0; step < task.size - 1; ++step) {
+            for (int i = 0; i < task.size - 1; i++) {
+                if (select.find(">") != -1) {
+                    if (task.tasks[i].name < task.tasks[i + 1].name) { swap(task.tasks[i], task.tasks[i + 1]); }
+                }
+                else {
+                    if (task.tasks[i].name > task.tasks[i + 1].name) { swap(task.tasks[i], task.tasks[i + 1]); }
+                }
+            }
+        }
+    } else if (select.find("U") != -1 || select.find("u") != -1) {
+        for (int step = 0; step < task.size - 1; ++step) {
+            for (int i = 0; i < task.size - 1; i++) {
+                if (select.find(">") != -1) {
+                    if (task.tasks[i].index < task.tasks[i + 1].index) { swap(task.tasks[i], task.tasks[i + 1]); }
+                } else {
+                    if (task.tasks[i].index > task.tasks[i + 1].index) { swap(task.tasks[i], task.tasks[i + 1]); }
+                }
+            }
+        }
+    } else if (select.find("P") != -1 || select.find("p") != -1) {
+        for (int step = 0; step < task.size - 1; ++step) {
+            for (int i = 0; i < task.size - 1; i++) {
+                if (select.find(">") != -1) {
+                    if (task.tasks[i].priority < task.tasks[i + 1].priority) { swap(task.tasks[i], task.tasks[i + 1]); }
+                } else {
+                    if (task.tasks[i].priority > task.tasks[i + 1].priority) { swap(task.tasks[i], task.tasks[i + 1]); }
+                }
+            }
+        }
+    } else if (select.find("E") != -1 || select.find("e") != -1) {
+        for (int step = 0; step < task.size - 1; ++step) {
+            for (int i = 0; i < task.size - 1; i++) {
+                if (select.find(">") != -1) {
+                    if (task.tasks[i].deadline.size < task.tasks[i + 1].deadline.size) { swap(task.tasks[i], task.tasks[i + 1]); }
+                } else {
+                    if (task.tasks[i].deadline.size > task.tasks[i + 1].deadline.size) { swap(task.tasks[i], task.tasks[i + 1]); }
+                }
+            }
+        }
+    }
+    int d = 27, m = 11, y = 2022, d1, m1, y1;   //////////////////////////////////////////////////////////////////////// DATE
+    int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    if (y % 4 == 0) { daysMax[1] = 29; }
+    if (select.find("D") != -1 || select.find("d") != -1) {
+        for (int i = 0; i < task.size; i++) {
+            if (task.tasks[i].deadline.d == d && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) {
+                coutTask(task, i, color, thremeColor);
+                cout << endl;
+            }
+        }
+    } else if (select.find("W") != -1 || select.find("w") != -1) {
+        if (d + 7 > daysMax[m - 1]) {
+            d1 = d + 7 - daysMax[m - 1], y1 = y;
+            if (m == 11) { m1 = 0, y1 = y + 1; }
+            else { m1 = m + 1; }
+            for (int i = 0; i < task.size; i++) {
+                if (task.tasks[i].deadline.d >= d && task.tasks[i].deadline.d < d1 && task.tasks[i].deadline.m == m1 && task.tasks[i].deadline.y == y1) {
+                    coutTask(task, i, color, thremeColor);
+                    cout << endl;
 
-//template <typename Type>
-//bool sort(TaskData& task, Type data, int sort = 0) {
-//    for (int step = 0; step < task.size - 1; ++step) {
-//        for (int i = 0; i < task.size - 1; i++) {
-//            if (sort == 0) {
-//                if (data[i] > data[i + 1]) {
-//                    swap(task.priority[i], task.priority[i + 1]);
-//                    swap(task.index[i], task.index[i + 1]);
-//                    swap(task.createDateSize[i], task.createDateSize[i + 1]);
-//                    swap(task.deadlineSize[i], task.deadlineSize[i + 1]);
-//                    swap(task.createDate[i], task.createDate[i + 1]);
-//                    swap(task.deadline[i], task.deadline[i + 1]);
-//                    swap(task.name[i], task.name[i + 1]);
-//                    swap(task.description[i], task.description[i + 1]);
-//                }
-//            }
-//            else {
-//                if (data[i] < data[i + 1]) {
-//                    swap(task.priority[i], task.priority[i + 1]);
-//                    swap(task.index[i], task.index[i + 1]);
-//                    swap(task.createDateSize[i], task.createDateSize[i + 1]);
-//                    swap(task.deadlineSize[i], task.deadlineSize[i + 1]);
-//                    swap(task.createDate[i], task.createDate[i + 1]);
-//                    swap(task.deadline[i], task.deadline[i + 1]);
-//                    swap(task.name[i], task.name[i + 1]);
-//                    swap(task.description[i], task.description[i + 1]);
-//                }
-//            }
-//        }
-//    }
-//    return true;
-//}
+                }
+            }
+        } else {
+            d1 = d + 7;
+            for (int i = 0; i < task.size; i++) {
+                if (task.tasks[i].deadline.d > d && task.tasks[i].deadline.d < d1 && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) {
+                    coutTask(task, i, color, thremeColor);
+                    cout << endl;
 
-//
-//bool coutTask(TaskData task, HANDLE color, int thremeColor, string select) {
-//    if (select.find("N") != -1 || select.find("n") != -1) {
-//        if (select.find(">") != -1) { sort(task, task.name, 1); }
-//        else { sort(task, task.name, 0); }
-//    }
-//    else if (select.find("C") != -1 || select.find("c") != -1) {
-//        if (select.find(">") != -1) { sort(task, task.createDateSize, 1); }
-//        else { sort(task, task.createDateSize, 0); }
-//    }
-//    else if (select.find("U") != -1 || select.find("u") != -1) {
-//        if (select.find(">") != -1) { sort(task, task.index, 1); }
-//        else { sort(task, task.index, 0); }
-//    }
-//    else if (select.find("E") != -1 || select.find("e") != -1) {
-//        if (select.find(">") != -1) { sort(task, task.deadlineSize, 1); }
-//        else { sort(task, task.deadlineSize, 0); }
-//    }
-//    int d = task.createDate[0][0], m = task.createDate[1][0], y = task.createDate[2][0], d1, m1, y1;
-//    int daysMax[12]{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-//    if (y % 4 == 0) { daysMax[1] = 29; }
-//    if (select.find("D") != -1 || select.find("d") != -1) {
-//        for (int i = 0; i < task.size; i++) {
-//            if (task.deadline[0][i] == d && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-//                cout1(task, i, color, thremeColor);
-//                cout << endl;
-//            }
-//        }
-//    }
-//    else if (select.find("W") != -1 || select.find("w") != -1) {
-//        if (d + 7 > daysMax[m - 1]) {
-//            d1 = d + 7 - daysMax[m - 1], y1 = y;
-//            if (m == 11) { m1 = 0, y1 = y + 1; }
-//            else { m1 = m + 1; }
-//            for (int i = 0; i < task.size; i++) {
-//                if (task.deadline[0][i] >= d && task.deadline[0][i] < d1 && task.deadline[1][i] == m1 && task.deadline[2][i] == y1) {
-//                    cout1(task, i, color, thremeColor);
-//                    cout << endl;
-//
-//                }
-//            }
-//        }
-//        else {
-//            d1 = d + 7;
-//            for (int i = 0; i < task.size; i++) {
-//                if (task.deadline[0][i] > d && task.deadline[0][i] < d1 && task.deadline[1][i] == m && task.deadline[2][i] == y) {
-//                    cout1(task, i, color, thremeColor);
-//                    cout << endl;
-//
-//                }
-//            }
-//        }
-//    }
-//    else if (select.find("M") != -1 || select.find("M") != -1) {
-//        y1 = y;
-//        if (m == 11) { m1 = 0, y1 = y + 1; }
-//        else { m1 = m + 1; }
-//        for (int i = 0; i < task.size; i++) {
-//            if (task.deadline[1][i] > m && task.deadline[1][i] < m1 && task.deadline[2][i] == y1) {
-//                cout1(task, i, color, thremeColor);
-//                cout << endl;
-//            }
-//        }
-//    }
-//    else {
-//        for (int i = 0; i < task.size; i++) {
-//
-//            cout1(task, i, color, thremeColor);
-//            cout << endl;
-//        }
-//    }
-//
-//    return true;
-//}
-//
-//bool deleteTask(TaskData& task, int number) {
-//    for (int i = 0; i < task.size; i++) {
-//        if (task.index[i] == number) {
-//            --task.size;
-//            del(task.name, task.size, i);
-//            del(task.description, task.size, i);
-//            del(task.priority, task.size, i);
-//            del2D(task.deadline, task.ROWS, task.size, i);
-//            del2D(task.createDate, task.ROWS, task.size, i);
-//            del(task.index, task.size, i);
-//            del(task.createDateSize, task.size, i);
-//            del(task.deadlineSize, task.size, i);
-//            return true;
-//        }
-//    }
-//    return false;
-//}
-//
+                }
+            }
+        }
+    } else if (select.find("M") != -1 || select.find("M") != -1) {
+        y1 = y;
+        if (m == 11) { m1 = 0, y1 = y + 1; }
+        else { m1 = m + 1; }
+        for (int i = 0; i < task.size; i++) {
+            if (task.tasks[i].deadline.m > m && task.tasks[i].deadline.m < m1 && task.tasks[i].deadline.y == y1) {
+                coutTask(task, i, color, thremeColor);
+                cout << endl;
+            }
+        }
+    } else {
+        for (int i = 0; i < task.size; i++) {
+            coutTask(task, i, color, thremeColor);
+            cout << endl;
+        }
+    }
 
+    return true;
+}
 
 //
 //bool findTask(TaskData& task, HANDLE color, string search, int thremeColor) {
@@ -350,57 +288,57 @@ void delTask(TaskData& task, int index) {
 //        cout << "FLAG 1";
 //    }
 //}
-//
-//int startProgram(TaskData& task) {
-//    int thremeColor = 2;
-//    string tmp;
-//
-//    while (tmp != "y" && tmp != "Y") {
-//        system("cls");
-//        cout << "1. White \n2. Black \n3. Red \n4. Blue \n5. Yellow \n6. File\nEnter \"y\" to continue \n Select threme: ";
-//        getline(cin, tmp);
-//        if (tmp == "1") {
-//            system("color F0");
-//            thremeColor = 240;
-//        }
-//        else if (tmp == "2") {
-//            system("color 0F");
-//            thremeColor = 0;
-//        }
-//        else if (tmp == "3") {
-//            system("color CF");
-//            thremeColor = 192;
-//        }
-//        else if (tmp == "4") {
-//            system("color 9F");
-//            thremeColor = 144;
-//        }
-//        else if (tmp == "5") {
-//            system("color E0");
-//            thremeColor = 224;
-//        }
-//        else if (tmp == "6") {
-//            /*system("cls");
-//            string tmp;
-//            cout << "Drag the file into the window: ";
-//            getline(cin, tmp);
-//            ifstream hh;
-//            hh.open(tmp);
-//            openFile(hh, task);
-//            hh.close();*/
-//        }
-//    }
-//    system("cls");
-//    return thremeColor;
-//}
+
+int startProgram(TaskData& task) {
+    int thremeColor = 2;
+    string tmp;
+
+    while (tmp != "y" && tmp != "Y") {
+        system("cls");
+        cout << "1. White \n2. Black \n3. Red \n4. Blue \n5. Yellow \n6. File\nEnter \"y\" to continue \n Select threme: ";
+        getline(cin, tmp);
+        if (tmp == "1") {
+            system("color F0");
+            thremeColor = 240;
+        }
+        else if (tmp == "2") {
+            system("color 0F");
+            thremeColor = 0;
+        }
+        else if (tmp == "3") {
+            system("color CF");
+            thremeColor = 192;
+        }
+        else if (tmp == "4") {
+            system("color 9F");
+            thremeColor = 144;
+        }
+        else if (tmp == "5") {
+            system("color E0");
+            thremeColor = 224;
+        }
+        else if (tmp == "6") {
+            /*system("cls");
+            string tmp;
+            cout << "Drag the file into the window: ";
+            getline(cin, tmp);
+            ifstream hh;
+            hh.open(tmp);
+            openFile(hh, task);
+            hh.close();*/
+        }
+    }
+    system("cls");
+    return thremeColor;
+}
 
 int main() {
-    //HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
     TaskData task;
     Task newValue;
     string date;
     int tmp, tmp2;
-    //int thremeColor = startProgram(task);
+    int thremeColor = startProgram(task);
 
     while (1) {
         //SetConsoleCP(1251);
@@ -434,7 +372,7 @@ int main() {
             cout << " Successfully!\n";
             system("pause");
             break;
-        case 2:
+        /*case 2:
             system("cls");
             for (int i = 0; i < task.size; i++){
                 cout << "Task index: " << task.tasks[i].index << endl;
@@ -445,7 +383,7 @@ int main() {
             }
             cout << " Successfully!\n";
             system("pause");
-            break;
+            break;*/
         case 3:
             system("cls");
             cout << "\n ==== Delete task ==== \n\n";
@@ -466,7 +404,7 @@ int main() {
             cout << " Successfully!" << endl;
             system("pause");
             break;
-        case 4:
+        case 2:
             system("cls");
             cout << "\n ==== Edit task ==== \n\n";
             cout << " 1. Name \n 2. Description \n 3. Priority \n 4. Deadline \n 5. All \n 6.Exit\n > Select an option: ";
@@ -512,15 +450,17 @@ int main() {
                         cout << " Enter name: ";
                         getline(cin, newValue.name);
                         task.tasks[i].name = newValue.name;
+
                         cout << " Enter description: ";
                         getline(cin, newValue.description);
                         task.tasks[i].description = newValue.description;
-                        cin.ignore();
+
                         do {
                             cout << " Enter priority: ";
                             cin >> newValue.priority;
                         } while (newValue.priority < 1 || newValue.priority > 5);
                         task.tasks[i].priority = newValue.priority;
+                        cin.ignore();
                         do {
                             cout << " Enter deadline: ";
                             getline(cin, newValue.name);
@@ -531,18 +471,16 @@ int main() {
                 }
             }
             break;
-        //case 4:
-        //    system("cls");
-        //    for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
-        //    cout << endl;
-        //    cout << " ==== Cout task ==== \n\n";
-        //    cout << " [N] Name  [E] Deadline  [C] Date create  [U] Number  [D] Day  [W] Week  [M] Month  [<]A..Z  [>]Z..A\n > Select an option: ";
-        //    cin.ignore();
-        //    getline(cin, select);
-        //    coutTask(task, color, thremeColor, select);
-        //    cout << " Successfully!" << endl;
-        //    system("pause");
-        //    break;
+        case 4:
+            system("cls");
+            cout << "\n ==== Cout task ==== \n\n";
+            cout << " [N] Name  [E] Deadline [P] Priority [U] Number  [D] Day  [W] Week  [M] Month  [>]Z..A\n > Select an option: ";
+            cin.ignore();
+            getline(cin, date);
+            sortTask(task, color, thremeColor, date);
+            cout << " Successfully!" << endl;
+            system("pause");
+            break;
         //case 5:
         //    system("cls");
         //    for (int i = 0; i < w / 2 - 22; i++) { cout << " "; }
