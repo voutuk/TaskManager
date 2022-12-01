@@ -88,18 +88,18 @@ void coutTask(TaskData task, int i, HANDLE color) {
     int str4 = create.length() + 2;
     int max = max(str2, max(str3, max(str4, str1)));
 
-    cout << "+";
+    cout << " +";
     for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, "-"); }
     txtColor(color, 0, "+");
-    cout << endl << "| " << task.tasks[i].index << " " << task.tasks[i].name;
+    cout << endl << " | " << task.tasks[i].index << " " << task.tasks[i].name;
     for (int i = 0; i < max - str1; i++) { cout << " "; }
-    cout << "|" << endl << "| " << task.tasks[i].description;
+    cout << "|" << endl << " | " << task.tasks[i].description;
     for (int i = 0; i < max - str2; i++) { cout << " "; }
-    cout << " |" << endl << "| " << task.tasks[i].priority << " " << deadline;
+    cout << " |" << endl << " | " << task.tasks[i].priority << " " << deadline;
     for (int i = 0; i < max - str3; i++) { cout << " "; }
-    cout << " |" << endl << "| " << create;
+    cout << " |" << endl << " | " << create;
     for (int i = 0; i < max - str4; i++) { cout << " "; }
-    cout << " |" << endl << "+";
+    cout << " |" << endl << " +";
     for (int i = 0; i < max; i++) { txtColor(color, rand() % 16, "-"); }
     txtColor(color, 0, "+");
 }
@@ -215,9 +215,9 @@ bool findTask(TaskData& task, HANDLE color, string search) {
     bool a = validateDate(search, d, m, y);
     for (int i = 0; i < task.size; i++) {
         if (task.tasks[i].name.find(search) != -1) { coutTask(task, i, color); }
-        if (task.tasks[i].description.find(search) != -1) { coutTask(task, i, color); }
+        else if (task.tasks[i].description.find(search) != -1) { coutTask(task, i, color); }
         //if (task.priority[i] == stoi(search)) { cout1(task, i, color); }
-        if (a == true) {
+        else if (a == true) {
             if (task.tasks[i].deadline.d == d && task.tasks[i].deadline.m == m && task.tasks[i].deadline.y == y) { coutTask(task, i, color); }
         }
     }
@@ -290,6 +290,7 @@ string openFile(TaskData& task, HANDLE color) {
 
 int main() {
     system("color F0");
+    system("mode con cols=45 lines=35");
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
     TaskData task;
     Task newValue;
@@ -300,15 +301,22 @@ int main() {
         SetConsoleCP(1251);
         SetConsoleOutputCP(1251);
         system("cls");
-        cout << endl;
-        cout << " ==== MENU ==== \n\n";
-        cout << " 1. New task \n 2. Edit task \n 3. Delete task \n 4. Cout task \n 5. Find task \n 6. Exit \n > Enter num: ";
+        txtColor(color, 12, "\n ###########################################\n #                  ");
+        txtColor(color, 0, "MENU");
+        txtColor(color, 12, "                   #\n ###########################################");
+        txtColor(color, 0, " \n\n");
+        cout << " 1. New task \n 2. Edit task \n 3. Delete task \n 4. Cout task \n 5. Find task \n 6. Exit ";
+        txtColor(color, 9, "\n > Enter num:");
+        txtColor(color, 0, " ");
         cin >> tmp;
         switch (tmp) {
         case 1:
             system("cls");
             cin.ignore();
-            cout << "\n ==== Create task ==== \n\n";
+            txtColor(color, 12, "\n ###########################################\n #               ");
+            txtColor(color, 0, "Create task");
+            txtColor(color, 12, "               #\n ###########################################");
+            txtColor(color, 0, " \n\n");
             cout << " Enter name: ";
             getline(cin, newValue.name);
             cout << " Enter description: ";
@@ -342,7 +350,10 @@ int main() {
             break;
         case 3:
             system("cls");
-            cout << "\n ==== Delete task ==== \n\n";
+            txtColor(color, 12, "\n ###########################################\n #               ");
+            txtColor(color, 0, "Delete task");
+            txtColor(color, 12, "               #\n ###########################################");
+            txtColor(color, 0, " \n\n");
             while (1) {
                 cout << " Enter number task: ";
                 cin >> tmp;
@@ -362,8 +373,11 @@ int main() {
             break;
         case 2:
             system("cls");
-            cout << "\n ==== Edit task ==== \n\n";
-            cout << " 1. Name \n 2. Description \n 3. Priority \n 4. Deadline \n 5. All \n 6.Exit\n > Select an option: ";
+            txtColor(color, 12, "\n ###########################################\n #               ");
+            txtColor(color, 0, "Edit task");
+            txtColor(color, 12, "                 #\n ###########################################");
+            txtColor(color, 0, " \n\n");
+            cout << " 1. Name \n 2. Description \n 3. Priority \n 4. Deadline \n 5. All \n 6. Exit\n > Select an option: ";
             cin >> tmp;
             if (tmp == 0) { break; }
             cout << " Enter number task: ";
@@ -429,17 +443,24 @@ int main() {
             break;
         case 4:
             system("cls");
-            cout << "\n ==== Cout task ==== \n\n";
-            cout << " [N] Name  [E] Deadline [P] Priority [U] Number  [D] Day  [W] Week  [M] Month  [>]Z..A\n > Select an option: ";
+            txtColor(color, 12, "\n ###########################################\n #               ");
+            txtColor(color, 0, "Cout task");
+            txtColor(color, 12, "                 #\n ###########################################");
+            txtColor(color, 0, " \n\n");
+            cout << " [N] Name  [E] Deadline  [P] Priority \n [U] Number  [D] Day  [W] Week  [M] Month \n [>] Z..A\n > Select an option: ";
             cin.ignore();
             getline(cin, date);
+            cout << "\n";
             sortTask(task, color, date);
             cout << " Successfully!" << endl;
             system("pause");
             break;
         case 5:
             system("cls");
-            cout << "\n ==== Find task ==== \n\n";
+            txtColor(color, 12, "\n ###########################################\n #               ");
+            txtColor(color, 0, "Find task");
+            txtColor(color, 12, "                 #\n ###########################################");
+            txtColor(color, 0, " \n\n");
             cout << " > Enter a search query: ";
             cin.ignore();
             getline(cin, date);
