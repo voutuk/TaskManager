@@ -1,4 +1,4 @@
-# Task Manager 2.0
+# Task Manager
 
 Cpp file: [`Task manager.cpp`](/Task%20manager/Task%20manager.cpp)
 Text file with tasks: [`dataTask.txt`](/dataTask.txt)
